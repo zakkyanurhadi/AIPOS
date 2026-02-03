@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Item Tambahan - AIPOS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#600000",
+              "background-light": "#F3F4F6",
+              "background-dark": "#111827",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1F2937",
+              "input-light": "#FFFFFF",
+              "input-dark": "#374151",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-body text-gray-900 dark:text-gray-100 h-screen overflow-hidden flex flex-col transition-colors duration-200"
+  >
+    <!-- Header -->
+    <header
+      class="bg-primary text-white px-6 pt-10 pb-4 shadow-md flex items-center shrink-0 z-20 sticky top-0"
+    >
+      <a
+        href="tambah_produk.html"
+        class="material-icons mr-3 hover:bg-white/20 rounded-full p-1.5 transition"
+      >
+        arrow_back
+      </a>
+      <h1 class="text-lg font-semibold tracking-wide flex-1">Item Tambahan</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-4 no-scrollbar">
+      <!-- Header Section -->
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-gray-800 dark:text-white">
+          Daftar Item Tambahan (<span id="itemCount">1</span>)
+        </h2>
+        <button
+          onclick="openAddModal()"
+          class="flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-full font-semibold text-sm shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition"
+        >
+          Tambah
+          <span class="material-icons text-lg">add</span>
+        </button>
+      </div>
+
+      <!-- Item List -->
+      <section class="space-y-3" id="itemList">
+        <!-- Item Card -->
+        <div
+          class="item-card bg-card-light dark:bg-card-dark rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-semibold text-gray-800 dark:text-white">
+                  Topping Es Krim
+                </h3>
+                <span
+                  class="px-2.5 py-0.5 text-xs font-medium rounded-full border border-primary text-primary bg-primary/5"
+                  >Opsional</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Extra topping untuk minuman
+              </p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                Pilih Min: 0, Max: 3
+              </p>
+            </div>
+            <button
+              onclick="openOptionsMenu(this, 'Topping Es Krim')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Another Item Card (for demonstration) -->
+        <div
+          class="item-card bg-card-light dark:bg-card-dark rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-semibold text-gray-800 dark:text-white">
+                  Extra Shot
+                </h3>
+                <span
+                  class="px-2.5 py-0.5 text-xs font-medium rounded-full border border-green-500 text-green-600 bg-green-50 dark:bg-green-900/20"
+                  >Wajib</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Tambahan espresso shot
+              </p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                Pilih Min: 1, Max: 2
+              </p>
+            </div>
+            <button
+              onclick="openOptionsMenu(this, 'Extra Shot')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="addModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/50" onclick="closeAddModal()"></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto"
+      >
+        <div
+          class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-6"
+        ></div>
+        <h3
+          id="modalTitle"
+          class="text-lg font-bold text-gray-800 dark:text-white mb-6"
+        >
+          Tambah Item Tambahan
+        </h3>
+
+        <div class="mb-5">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Nama Item <span class="text-blue-500">*</span>
+          </label>
+          <input
+            id="namaItem"
+            class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3 placeholder-gray-400"
+            placeholder="Contoh: Topping, Extra Shot..."
+            type="text"
+          />
+        </div>
+
+        <div class="mb-5">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Deskripsi
+          </label>
+          <input
+            id="deskripsiItem"
+            class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3 placeholder-gray-400"
+            placeholder="Deskripsi item tambahan..."
+            type="text"
+          />
+        </div>
+
+        <div class="mb-5">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Tipe <span class="text-blue-500">*</span>
+          </label>
+          <div class="flex gap-3">
+            <label class="flex-1 relative">
+              <input
+                type="radio"
+                name="tipeItem"
+                value="opsional"
+                checked
+                class="peer sr-only"
+              />
+              <div
+                class="p-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 peer-checked:border-primary peer-checked:bg-primary/5 text-center cursor-pointer transition"
+              >
+                <span
+                  class="text-sm font-medium text-gray-700 dark:text-gray-300 peer-checked:text-primary"
+                  >Opsional</span
+                >
+              </div>
+            </label>
+            <label class="flex-1 relative">
+              <input
+                type="radio"
+                name="tipeItem"
+                value="wajib"
+                class="peer sr-only"
+              />
+              <div
+                class="p-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 peer-checked:border-primary peer-checked:bg-primary/5 text-center cursor-pointer transition"
+              >
+                <span
+                  class="text-sm font-medium text-gray-700 dark:text-gray-300 peer-checked:text-primary"
+                  >Wajib</span
+                >
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+            >
+              Pilih Min
+            </label>
+            <input
+              id="minPilih"
+              class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3"
+              placeholder="0"
+              type="number"
+              value="0"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+            >
+              Pilih Max
+            </label>
+            <input
+              id="maxPilih"
+              class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3"
+              placeholder="0"
+              type="number"
+              value="0"
+            />
+          </div>
+        </div>
+
+        <!-- Item Options -->
+        <div class="mb-5">
+          <div class="flex items-center justify-between mb-3">
+            <label
+              class="block text-sm font-medium text-gray-600 dark:text-gray-400"
+            >
+              Opsi Item
+            </label>
+            <button
+              onclick="addOption()"
+              class="text-primary text-sm font-medium flex items-center gap-1 hover:underline"
+            >
+              <span class="material-icons text-lg">add</span>
+              Tambah Opsi
+            </button>
+          </div>
+          <div id="optionsList" class="space-y-3">
+            <div class="option-row flex gap-3 items-center">
+              <input
+                class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 px-3 placeholder-gray-400"
+                placeholder="Nama opsi..."
+                type="text"
+              />
+              <div class="relative w-28">
+                <div
+                  class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2"
+                >
+                  <span class="text-gray-400 text-xs">Rp</span>
+                </div>
+                <input
+                  class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pl-7 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 placeholder-gray-400"
+                  placeholder="0"
+                  type="number"
+                />
+              </div>
+              <button
+                onclick="removeOption(this)"
+                class="text-blue-400 hover:text-blue-600 p-1"
+              >
+                <span class="material-icons text-xl">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-6">
+          <button
+            onclick="closeAddModal()"
+            class="flex-1 bg-white dark:bg-transparent text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 font-semibold py-3.5 px-4 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-[0.98] transition"
+          >
+            Batal
+          </button>
+          <button
+            onclick="saveItem()"
+            class="flex-1 bg-primary text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Options Menu -->
+    <div id="optionsMenu" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/50"
+        onclick="closeOptionsMenu()"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-3xl p-6"
+      >
+        <div
+          class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"
+        ></div>
+        <h3
+          id="optionsTitle"
+          class="text-lg font-bold text-gray-800 dark:text-white mb-4 text-center"
+        >
+          Opsi
+        </h3>
+
+        <button
+          onclick="editItem()"
+          class="w-full flex items-center gap-3 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition"
+        >
+          <span class="material-icons text-primary">edit</span>
+          <span class="text-gray-800 dark:text-white font-medium">Edit</span>
+        </button>
+        <button
+          onclick="deleteItem()"
+          class="w-full flex items-center gap-3 px-4 py-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition"
+        >
+          <span class="material-icons text-blue-500">delete</span>
+          <span class="text-blue-500 font-medium">Hapus</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let currentItem = null;
+
+      function openAddModal() {
+        document.getElementById("modalTitle").textContent =
+          "Tambah Item Tambahan";
+        document.getElementById("namaItem").value = "";
+        document.getElementById("deskripsiItem").value = "";
+        document.getElementById("minPilih").value = "0";
+        document.getElementById("maxPilih").value = "0";
+        document.getElementById("addModal").classList.remove("hidden");
+      }
+
+      function closeAddModal() {
+        document.getElementById("addModal").classList.add("hidden");
+      }
+
+      function openOptionsMenu(btn, name) {
+        currentItem = name;
+        document.getElementById("optionsTitle").textContent = name;
+        document.getElementById("optionsMenu").classList.remove("hidden");
+      }
+
+      function closeOptionsMenu() {
+        document.getElementById("optionsMenu").classList.add("hidden");
+        currentItem = null;
+      }
+
+      function editItem() {
+        closeOptionsMenu();
+        document.getElementById("modalTitle").textContent =
+          "Edit Item Tambahan";
+        document.getElementById("namaItem").value = currentItem;
+        document.getElementById("addModal").classList.remove("hidden");
+      }
+
+      function deleteItem() {
+        if (
+          confirm(
+            'Apakah Anda yakin ingin menghapus item "' + currentItem + '"?',
+          )
+        ) {
+          alert('Item "' + currentItem + '" berhasil dihapus');
+          closeOptionsMenu();
+        }
+      }
+
+      function saveItem() {
+        const nama = document.getElementById("namaItem").value.trim();
+        if (!nama) {
+          alert("Nama item tidak boleh kosong");
+          return;
+        }
+        alert('Item "' + nama + '" berhasil disimpan');
+        closeAddModal();
+      }
+
+      function addOption() {
+        const optionsList = document.getElementById("optionsList");
+        const newOption = document.createElement("div");
+        newOption.className = "option-row flex gap-3 items-center";
+        newOption.innerHTML = `
+          <input
+            class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 px-3 placeholder-gray-400"
+            placeholder="Nama opsi..."
+            type="text"
+          />
+          <div class="relative w-28">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+              <span class="text-gray-400 text-xs">Rp</span>
+            </div>
+            <input
+              class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pl-7 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 placeholder-gray-400"
+              placeholder="0"
+              type="number"
+            />
+          </div>
+          <button onclick="removeOption(this)" class="text-blue-400 hover:text-blue-600 p-1">
+            <span class="material-icons text-xl">close</span>
+          </button>
+        `;
+        optionsList.appendChild(newOption);
+      }
+
+      function removeOption(btn) {
+        const optionsList = document.getElementById("optionsList");
+        if (optionsList.children.length > 1) {
+          btn.closest(".option-row").remove();
+        } else {
+          alert("Minimal harus ada 1 opsi");
+        }
+      }
+    </script>
+  </body>
+</html>
+

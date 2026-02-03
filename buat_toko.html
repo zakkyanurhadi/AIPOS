@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Buat Toko - AIPOS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              secondary: "#333333",
+              "background-light": "#f8f5f5",
+              "background-dark": "#230f0f",
+              "card-light": "#ffffff",
+              "card-dark": "#2a1515",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              "2xl": "2rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Custom checkbox style for iOS feel */
+      .custom-checkbox:checked {
+        background-color: #2563ea;
+        border-color: #2563ea;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-secondary dark:text-gray-100 min-h-screen flex flex-col font-display antialiased selection:bg-primary/20 selection:text-primary"
+  >
+    <!-- Top App Bar -->
+    <header
+      class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-200/50 dark:border-white/5 px-4 pt-12 pb-4 flex items-center justify-between"
+    >
+      <button
+        class="size-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all text-secondary dark:text-white"
+      >
+        <a href="daftar_toko.html"
+          ><span class="material-symbols-outlined font-medium"
+            >arrow_back_ios_new</span
+          ></a
+        >
+      </button>
+      <h1
+        class="text-lg font-bold tracking-tight text-center flex-1 pr-10 text-secondary dark:text-white"
+      >
+        Buat Toko Baru
+      </h1>
+    </header>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col px-4 pb-32">
+      <!-- Form Section -->
+      <div class="mt-6 flex flex-col gap-6">
+        <!-- Store Name Field -->
+        <div class="flex flex-col gap-2">
+          <label
+            class="text-sm font-semibold text-secondary dark:text-gray-200 ml-1"
+            for="storeName"
+            >Nama Toko</label
+          >
+          <div class="relative group">
+            <input
+              class="w-full h-14 px-4 bg-card-light dark:bg-card-dark rounded-xl border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-gray-400 text-base shadow-sm dark:shadow-none"
+              id="storeName"
+              placeholder="Contoh: Warung Sejahtera"
+              type="text"
+            />
+            <div
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-green-600 opacity-0 group-focus-within:opacity-100 transition-opacity"
+            >
+              <!-- Validation icon placeholder if needed -->
+            </div>
+          </div>
+        </div>
+        <!-- Description Field -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-end ml-1">
+            <label
+              class="text-sm font-semibold text-secondary dark:text-gray-200"
+              for="storeDesc"
+              >Deskripsi</label
+            >
+            <span
+              class="text-xs text-gray-500 font-medium bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-md"
+              >Opsional</span
+            >
+          </div>
+          <textarea
+            class="w-full min-h-[120px] p-4 bg-card-light dark:bg-card-dark rounded-xl border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-1 focus:ring-primary outline-none resize-none transition-all placeholder:text-gray-400 text-base shadow-sm dark:shadow-none"
+            id="storeDesc"
+            placeholder="Jelaskan bisnis anda secara singkat..."
+          ></textarea>
+        </div>
+      </div>
+      <!-- Template Section -->
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-4 px-1">
+          <h3 class="text-lg font-bold text-secondary dark:text-white">
+            Pilih Template Usaha
+          </h3>
+          <button
+            class="text-xs font-semibold text-primary hover:text-primary/80"
+          >
+            Lihat Semua
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Card 1: Retail (Selected) -->
+          <div
+            class="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark transition-all"
+          >
+            <!-- Background Image -->
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+              data-alt="Interior of a modern clothing retail store with clothes on racks"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDmv4qZfTeSpmt-x9F6a2fp6NsEyUPLlYMz-W1G3B4lN4zYzNiuqDJh2REqoja0GGU4ZefM3rDBInxqjqufu-TxGp4Ye6JuDce0HJIyi54-rR658p0ZRquJQdmVUY1m_X4t5qIMgK0JEYVIHsrGTM8srU1uEEOkUblDmTpJAH-MVobylKEG-UIdPzYoXB0fLySXK4pL2ixLxzpiGSEG2f75jkmx-CTsOiRNcbJ94gQf1xt1AbrRmOz66rVrl4BWYUOZnt_pyMzi05k');
+              "
+            ></div>
+            <!-- Gradient Overlay -->
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+            ></div>
+            <!-- Content -->
+            <div class="absolute bottom-0 left-0 w-full p-3 flex flex-col">
+              <span class="text-white text-sm font-bold leading-tight"
+                >Ritel</span
+              >
+              <span class="text-white/70 text-[10px] font-medium mt-0.5"
+                >Toko baju, kelontong</span
+              >
+            </div>
+            <!-- Selected Indicator -->
+            <div
+              class="absolute top-2 left-2 bg-primary text-white p-1 rounded-full shadow-sm"
+            >
+              <span class="material-symbols-outlined text-[16px] block"
+                >check</span
+              >
+            </div>
+            <!-- Favorite Button -->
+            <button
+              class="absolute top-2 right-2 size-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-colors"
+            >
+              <span class="material-symbols-outlined text-white text-[18px]"
+                >favorite</span
+              >
+            </button>
+          </div>
+          <!-- Card 2: F&B -->
+          <div
+            class="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-white/20 transition-all"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+              data-alt="Close up of coffee and pastries in a cafe setting"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAMWlWo_aswaRkq7yiROhS0sHVxHq1tI1fSYemT8EyVk5UEkodeUtHm8_qLlatwKu2drWJYsTLAeA5zK3xNNLU5wpt6UPkMp7nPXm_p7hfcJZYietIUsYDjH0FSDaTpZKmVGrD_ksBuNJFYwgf101NJO0cYsTdz07XRVlljPDhQC8vRbqLhOXhyVeB3V5amoeSOzA02NhiizdBDLcH2004lidDEEDzHKNoqSqQnyfGBsFofgc_H9IWlUmNHhonF6SJzHQo95tISnxE');
+              "
+            ></div>
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+            ></div>
+            <div class="absolute bottom-0 left-0 w-full p-3 flex flex-col">
+              <span class="text-white text-sm font-bold leading-tight"
+                >F&amp;B</span
+              >
+              <span class="text-white/70 text-[10px] font-medium mt-0.5"
+                >Kafe, restoran, warung</span
+              >
+            </div>
+            <button
+              class="absolute top-2 right-2 size-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-colors"
+            >
+              <span class="material-symbols-outlined text-white text-[18px]"
+                >favorite_border</span
+              >
+            </button>
+          </div>
+          <!-- Card 3: Services -->
+          <div
+            class="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-white/20 transition-all"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+              data-alt="Barber cutting hair in a modern barbershop"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_dCQSJuYmuFMeQY0ufzflD-AriZdAM9-l5yQN9Y9ZBpWkLZIQ57Vi8qQ1YOAlIID2urgIKoFRtb3u5lZdAKSmnuPx07uTgapbWFcsOP-2-PzhCFXMfkwyXWt0mBACEeL4x8WHg5kP9U4My6TscOPnqt1lYL_vQE3dYyusLtlb_1K0Pl5ZmC40nirIPtpsXCuai7cY9pvHlKfMmwn_7_R6mvw2bgXgEuNUDL_XjQX8J6aOqqtXGLemfp1137_WbYTr-IORRhq0KUU');
+              "
+            ></div>
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+            ></div>
+            <div class="absolute bottom-0 left-0 w-full p-3 flex flex-col">
+              <span class="text-white text-sm font-bold leading-tight"
+                >Jasa</span
+              >
+              <span class="text-white/70 text-[10px] font-medium mt-0.5"
+                >Laundry, salon, bengkel</span
+              >
+            </div>
+            <button
+              class="absolute top-2 right-2 size-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-colors"
+            >
+              <span class="material-symbols-outlined text-white text-[18px]"
+                >favorite_border</span
+              >
+            </button>
+          </div>
+          <!-- Card 4: Other -->
+          <div
+            class="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-white/20 transition-all"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+              data-alt="Abstract organized office desk setup"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDILSLDhDB3vu5maR-Y3PY_f6GtIBy1USWcKadWBdaJ7LxgMJHFP_3-UNoEvZxN_W3sBK7IbukdAknjqCY68ikYl62bUC8BFuyKcLVvrk-nB3aZpWkrqoNO6q6chgFfFdIT6dxvndgAWkn7Q-Lu-rOwm9YTO1CIG_iBPcB0tz5dsVCPjVhuwv1CooOI6iWeEIU5k0Gl4Z8-TDRI8X3LTTNBmseqSKy1oOJoC4T15v9Mh5v18TmI1cYMi_qQZuYQ3e8XpPr8w6LLd-s');
+              "
+            ></div>
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+            ></div>
+            <div class="absolute bottom-0 left-0 w-full p-3 flex flex-col">
+              <span class="text-white text-sm font-bold leading-tight"
+                >Lainnya</span
+              >
+              <span class="text-white/70 text-[10px] font-medium mt-0.5"
+                >Template kustom</span
+              >
+            </div>
+            <button
+              class="absolute top-2 right-2 size-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-colors"
+            >
+              <span class="material-symbols-outlined text-white text-[18px]"
+                >favorite_border</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Fixed Bottom Action -->
+    <div
+      class="fixed bottom-0 w-full bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-white/5 p-4 pb-8 z-40"
+    >
+      <div class="flex flex-col gap-4">
+        <!-- Terms Checkbox -->
+        <label class="flex items-start gap-3 cursor-pointer group">
+          <div class="relative flex items-center mt-0.5">
+            <input
+              id="termsCheckbox"
+              class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-300 dark:border-gray-600 bg-card-light dark:bg-card-dark checked:border-primary checked:bg-primary transition-all custom-checkbox"
+              type="checkbox"
+            />
+            <span
+              class="material-symbols-outlined absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 text-[16px] pointer-events-none font-bold"
+              >check</span
+            >
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 leading-snug">
+            Saya menyetujui
+            <a class="text-primary font-semibold hover:underline" href="#"
+              >Syarat &amp; Ketentuan</a
+            >
+            Layanan AIPOS.
+          </p>
+        </label>
+        <!-- Primary Action Button -->
+        <button
+          id="submitBtn"
+          disabled
+          onclick="handleSubmit()"
+          class="w-full h-14 bg-gray-300 dark:bg-gray-700 text-white rounded-full font-bold text-lg shadow-none transition-all flex items-center justify-center gap-2 cursor-not-allowed"
+        >
+          <span id="btnText">Simpan & Lanjutkan</span>
+          <span id="btnIcon" class="material-symbols-outlined text-[20px]"
+            >arrow_forward</span
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- Script Interaksi -->
+    <script>
+      // 1. Template Selection Logic
+      const cards = document.querySelectorAll(".grid > div");
+      cards.forEach((card, index) => {
+        card.addEventListener("click", function (e) {
+          // Prevent triggered by favorite button
+          if (e.target.closest("button")) return;
+
+          // Remove active state from all
+          cards.forEach((c) => {
+            c.classList.remove(
+              "ring-2",
+              "ring-primary",
+              "ring-offset-2",
+              "ring-offset-background-light",
+              "dark:ring-offset-background-dark"
+            );
+            c.classList.add("border", "border-transparent");
+            const indicator = c.querySelector(".absolute.top-2.left-2");
+            if (indicator) indicator.remove();
+          });
+
+          // Add active state to clicked
+          this.classList.add(
+            "ring-2",
+            "ring-primary",
+            "ring-offset-2",
+            "ring-offset-background-light",
+            "dark:ring-offset-background-dark"
+          );
+          this.classList.remove("border-transparent");
+
+          const checkIndicator = document.createElement("div");
+          checkIndicator.className =
+            "absolute top-2 left-2 bg-primary text-white p-1 rounded-full shadow-sm";
+          checkIndicator.innerHTML =
+            '<span class="material-symbols-outlined text-[16px] block">check</span>';
+          this.appendChild(checkIndicator);
+
+          // Haptic feedback simulation
+          if (window.navigator.vibrate) window.navigator.vibrate(10);
+        });
+      });
+
+      // 2. Favorite Toggle Logic
+      const favBtns = document.querySelectorAll(
+        "button .material-symbols-outlined"
+      );
+      favBtns.forEach((icon) => {
+        if (icon.innerText.includes("favorite")) {
+          icon.parentElement.addEventListener("click", function () {
+            const isFav = icon.innerText === "favorite";
+            icon.innerText = isFav ? "favorite_border" : "favorite";
+            icon.classList.toggle("text-blue-500", !isFav);
+
+            // Pop animation
+            icon.style.transform = "scale(1.3)";
+            setTimeout(() => (icon.style.transform = "scale(1)"), 200);
+          });
+        }
+      });
+
+      // 3. Validation & Submit Logic
+      const termsCheckbox = document.getElementById("termsCheckbox");
+      const submitBtn = document.getElementById("submitBtn");
+      const storeNameInput = document.getElementById("storeName");
+
+      function validateForm() {
+        const isNameFilled = storeNameInput.value.trim().length > 0;
+        const isTermsChecked = termsCheckbox.checked;
+
+        if (isNameFilled && isTermsChecked) {
+          submitBtn.disabled = false;
+          submitBtn.className =
+            "w-full h-14 bg-primary hover:bg-primary/90 active:scale-[0.98] text-white rounded-full font-bold text-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 cursor-pointer";
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.className =
+            "w-full h-14 bg-gray-300 dark:bg-gray-700 text-white rounded-full font-bold text-lg shadow-none transition-all flex items-center justify-center gap-2 cursor-not-allowed";
+        }
+      }
+
+      termsCheckbox.addEventListener("change", validateForm);
+      storeNameInput.addEventListener("input", validateForm);
+
+      function handleSubmit() {
+        const btnText = document.getElementById("btnText");
+        const btnIcon = document.getElementById("btnIcon");
+
+        // Disable button to prevent double click
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-80");
+
+        // Loading state
+        btnText.innerText = "Memproses Toko...";
+        btnIcon.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+
+        // Success simulation
+        setTimeout(() => {
+          btnText.innerText = "Toko Berhasil Dibuat!";
+          btnIcon.innerHTML = "check_circle";
+          submitBtn.classList.remove("bg-primary");
+          submitBtn.classList.add("bg-green-600");
+
+          setTimeout(() => {
+            window.location.href = "1home.html";
+          }, 800);
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
+

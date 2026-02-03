@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kategori Produk - AIPOS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#600000",
+              "background-light": "#F3F4F6",
+              "background-dark": "#111827",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1F2937",
+              "input-light": "#FFFFFF",
+              "input-dark": "#374151",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-body text-gray-900 dark:text-gray-100 h-screen overflow-hidden flex flex-col transition-colors duration-200"
+  >
+    <!-- Header -->
+    <header
+      class="bg-primary text-white px-6 pt-10 pb-4 shadow-md flex items-center shrink-0 z-20 sticky top-0"
+    >
+      <a
+        href="tambah_produk.html"
+        class="material-icons mr-3 hover:bg-white/20 rounded-full p-1.5 transition"
+      >
+        arrow_back
+      </a>
+      <h1 class="text-lg font-semibold tracking-wide flex-1">
+        Kategori Produk
+      </h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-4 no-scrollbar">
+      <!-- Header Section -->
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-gray-800 dark:text-white">
+          Daftar Kategori (<span id="kategoriCount">5</span>)
+        </h2>
+        <button
+          onclick="openAddModal()"
+          class="flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-full font-semibold text-sm shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition"
+        >
+          Tambah
+          <span class="material-icons text-lg">add</span>
+        </button>
+      </div>
+
+      <!-- Kategori List -->
+      <section
+        class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
+      >
+        <div id="kategoriList">
+          <!-- Kategori Item -->
+          <div
+            class="kategori-item flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <span class="text-gray-800 dark:text-white font-medium"
+              >Coffee</span
+            >
+            <button
+              onclick="openOptionsMenu(this, 'Coffee')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+          <div
+            class="kategori-item flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <span class="text-gray-800 dark:text-white font-medium">Fresh</span>
+            <button
+              onclick="openOptionsMenu(this, 'Fresh')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+          <div
+            class="kategori-item flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <span class="text-gray-800 dark:text-white font-medium"
+              >Literan</span
+            >
+            <button
+              onclick="openOptionsMenu(this, 'Literan')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+          <div
+            class="kategori-item flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <span class="text-gray-800 dark:text-white font-medium">Milk</span>
+            <button
+              onclick="openOptionsMenu(this, 'Milk')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+          <div
+            class="kategori-item flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <span class="text-gray-800 dark:text-white font-medium"
+              >Signature</span
+            >
+            <button
+              onclick="openOptionsMenu(this, 'Signature')"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+            >
+              <span class="material-icons">more_horiz</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="addModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/50" onclick="closeAddModal()"></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-3xl p-6 transform transition-transform duration-300"
+      >
+        <div
+          class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-6"
+        ></div>
+        <h3
+          id="modalTitle"
+          class="text-lg font-bold text-gray-800 dark:text-white mb-6"
+        >
+          Tambah Kategori
+        </h3>
+
+        <div class="mb-5">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Nama Kategori <span class="text-blue-500">*</span>
+          </label>
+          <input
+            id="kategoriInput"
+            class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3 placeholder-gray-400"
+            placeholder="Masukkan nama kategori..."
+            type="text"
+          />
+        </div>
+
+        <div class="flex gap-4 mt-6">
+          <button
+            onclick="closeAddModal()"
+            class="flex-1 bg-white dark:bg-transparent text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 font-semibold py-3.5 px-4 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-[0.98] transition"
+          >
+            Batal
+          </button>
+          <button
+            onclick="saveKategori()"
+            class="flex-1 bg-primary text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Options Menu -->
+    <div id="optionsMenu" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/50"
+        onclick="closeOptionsMenu()"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-3xl p-6"
+      >
+        <div
+          class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"
+        ></div>
+        <h3
+          id="optionsTitle"
+          class="text-lg font-bold text-gray-800 dark:text-white mb-4 text-center"
+        >
+          Opsi
+        </h3>
+
+        <button
+          onclick="editKategori()"
+          class="w-full flex items-center gap-3 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition"
+        >
+          <span class="material-icons text-primary">edit</span>
+          <span class="text-gray-800 dark:text-white font-medium">Edit</span>
+        </button>
+        <button
+          onclick="deleteKategori()"
+          class="w-full flex items-center gap-3 px-4 py-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition"
+        >
+          <span class="material-icons text-blue-500">delete</span>
+          <span class="text-blue-500 font-medium">Hapus</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let currentKategori = null;
+
+      function openAddModal() {
+        document.getElementById("modalTitle").textContent = "Tambah Kategori";
+        document.getElementById("kategoriInput").value = "";
+        document.getElementById("addModal").classList.remove("hidden");
+      }
+
+      function closeAddModal() {
+        document.getElementById("addModal").classList.add("hidden");
+      }
+
+      function openOptionsMenu(btn, name) {
+        currentKategori = name;
+        document.getElementById("optionsTitle").textContent = name;
+        document.getElementById("optionsMenu").classList.remove("hidden");
+      }
+
+      function closeOptionsMenu() {
+        document.getElementById("optionsMenu").classList.add("hidden");
+        currentKategori = null;
+      }
+
+      function editKategori() {
+        closeOptionsMenu();
+        document.getElementById("modalTitle").textContent = "Edit Kategori";
+        document.getElementById("kategoriInput").value = currentKategori;
+        document.getElementById("addModal").classList.remove("hidden");
+      }
+
+      function deleteKategori() {
+        if (
+          confirm(
+            'Apakah Anda yakin ingin menghapus kategori "' +
+              currentKategori +
+              '"?',
+          )
+        ) {
+          alert('Kategori "' + currentKategori + '" berhasil dihapus');
+          closeOptionsMenu();
+          // In real implementation, remove from list and update count
+        }
+      }
+
+      function saveKategori() {
+        const value = document.getElementById("kategoriInput").value.trim();
+        if (!value) {
+          alert("Nama kategori tidak boleh kosong");
+          return;
+        }
+        alert('Kategori "' + value + '" berhasil disimpan');
+        closeAddModal();
+        // In real implementation, add to list and update count
+      }
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,694 @@
+<!doctype html>
+
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AIPOS - Riwayat Transaksi</title>
+    <!-- Google Fonts: Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#5c0000",
+              "background-light": "#f8f6f6",
+              "background-dark": "#221010",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              "2xl": "2rem",
+              full: "9999px",
+            },
+            boxShadow: {
+              soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+      /* Efek gelombang halus saat klik pada elemen tertentu */
+      .btn-press:active {
+        transform: scale(0.96);
+      }
+      /* Scanner Overlay */
+      .scanner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .scanner-overlay.active {
+        display: flex;
+      }
+      .scanner-frame {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 24px;
+        overflow: hidden;
+      }
+      .scanner-frame::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #2563ea, transparent);
+        animation: scan 2s linear infinite;
+      }
+      @keyframes scan {
+        0% {
+          top: 0;
+        }
+        50% {
+          top: calc(100% - 3px);
+        }
+        100% {
+          top: 0;
+        }
+      }
+      .scanner-corner {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        border-color: #2563ea;
+        border-width: 4px;
+      }
+      .scanner-corner.top-left {
+        top: -2px;
+        left: -2px;
+        border-top-style: solid;
+        border-left-style: solid;
+        border-radius: 12px 0 0 0;
+      }
+      .scanner-corner.top-right {
+        top: -2px;
+        right: -2px;
+        border-top-style: solid;
+        border-right-style: solid;
+        border-radius: 0 12px 0 0;
+      }
+      .scanner-corner.bottom-left {
+        bottom: -2px;
+        left: -2px;
+        border-bottom-style: solid;
+        border-left-style: solid;
+        border-radius: 0 0 0 12px;
+      }
+      .scanner-corner.bottom-right {
+        bottom: -2px;
+        right: -2px;
+        border-bottom-style: solid;
+        border-right-style: solid;
+        border-radius: 0 0 12px 0;
+      }
+    </style>
+  </head>
+  <!-- Background utama -->
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-100 min-h-screen flex flex-col relative overflow-x-hidden"
+  >
+    <!-- Top App Bar (Header Solid) - Full width background -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 bg-background-light dark:bg-background-dark border-b border-gray-200/50 dark:border-gray-800/50 h-16 shadow-sm"
+    >
+      <div class="px-4 py-3 flex items-center justify-between h-full">
+        <!-- Judul (Tengah) -->
+        <h1
+          class="text-base font-bold text-gray-900 dark:text-white tracking-tight text-center flex-none w-1/2 truncate"
+        >
+          Riwayat Transaksi
+        </h1>
+      </div>
+    </header>
+
+    <!-- Spacer untuk fixed header -->
+    <div class="h-16"></div>
+
+    <!-- Search & Filter Section - Full width background -->
+    <div
+      class="fixed top-16 left-0 right-0 z-40 bg-background-light dark:bg-background-dark border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm"
+    >
+      <div class="px-4 py-2">
+        <!-- Search Bar -->
+        <div class="relative group mb-3">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <span
+              class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors"
+              >search</span
+            >
+          </div>
+          <input
+            class="block w-full pl-10 pr-3 py-3 border-none rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all text-base"
+            placeholder="Cari ID, pelanggan, atau nominal..."
+            type="text"
+          />
+          <div class="absolute inset-y-0 right-0 pr-2 flex items-center">
+            <button
+              id="btnOpenScanner"
+              class="relative p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all duration-300 hover:scale-105 active:scale-95"
+              title="Scan Barcode Produk"
+            >
+              <span class="material-symbols-outlined text-[22px]"
+                >barcode_scanner</span
+              >
+              <!-- Efek pulse -->
+              <span
+                class="absolute inset-0 rounded-xl bg-primary/20 animate-ping"
+              ></span>
+            </button>
+          </div>
+        </div>
+        <!-- Filter Chips -->
+        <div
+          class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mask-image-linear-gradient"
+        >
+          <button
+            class="flex shrink-0 items-center justify-center px-4 py-1.5 rounded-full bg-primary text-white text-sm font-medium shadow-lg shadow-primary/25 transition-transform active:scale-95"
+          >
+            Semua
+          </button>
+          <button
+            class="flex shrink-0 items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-white/10 transition-colors active:scale-95"
+          >
+            Hari Ini
+            <span class="material-symbols-outlined text-[18px]"
+              >calendar_today</span
+            >
+          </button>
+          <button
+            class="flex shrink-0 items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-white/10 transition-colors active:scale-95"
+          >
+            Status
+            <span class="material-symbols-outlined text-[18px]"
+              >expand_more</span
+            >
+          </button>
+          <button
+            class="flex shrink-0 items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-white/10 transition-colors active:scale-95"
+          >
+            Metode
+            <span class="material-symbols-outlined text-[18px]">payments</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer untuk fixed search section -->
+    <div class="h-[120px]"></div>
+
+    <!-- Main Content -->
+    <main
+      class="flex-1 w-full max-w-md mx-auto pb-32 bg-background-light dark:bg-background-dark"
+    >
+      <!-- Transaction List -->
+      <div class="px-4 space-y-4 bg-background-light dark:bg-background-dark">
+        <!-- Date Header -->
+        <div class="flex items-center justify-between pt-2">
+          <h2
+            class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+          >
+            Hari Ini
+          </h2>
+          <span class="text-xs font-medium text-gray-400"
+            >Total: Rp 195.000</span
+          >
+        </div>
+
+        <!-- Card: Success -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-soft border border-gray-100 dark:border-gray-700/50 flex flex-col gap-3 group active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
+        >
+          <!-- Status Stripe -->
+          <div
+            class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500 rounded-l-2xl"
+          ></div>
+          <div class="flex justify-between items-start pl-2">
+            <div class="flex gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400 shrink-0"
+              >
+                <span class="material-symbols-outlined">check</span>
+              </div>
+              <div class="flex flex-col">
+                <span
+                  class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5"
+                  >#TRX-2849 • 14:30 WIB</span
+                >
+                <h3
+                  class="text-lg font-bold text-gray-900 dark:text-white leading-tight"
+                >
+                  Rp 150.000
+                </h3>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 text-xs font-semibold"
+              >
+                Lunas
+              </span>
+              <div class="flex items-center gap-1 text-gray-400">
+                <span class="material-symbols-outlined text-[16px]"
+                  >qr_code_2</span
+                >
+                <span class="text-xs">QRIS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Pending -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-soft border border-gray-100 dark:border-gray-700/50 flex flex-col gap-3 group active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
+        >
+          <!-- Status Stripe -->
+          <div
+            class="absolute left-0 top-0 bottom-0 w-1.5 bg-orange-400 rounded-l-2xl"
+          ></div>
+          <div class="flex justify-between items-start pl-2">
+            <div class="flex gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center text-orange-500 dark:text-orange-400 shrink-0"
+              >
+                <span class="material-symbols-outlined">hourglass_empty</span>
+              </div>
+              <div class="flex flex-col">
+                <span
+                  class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5"
+                  >#TRX-2848 • 13:15 WIB</span
+                >
+                <h3
+                  class="text-lg font-bold text-gray-900 dark:text-white leading-tight"
+                >
+                  Rp 45.000
+                </h3>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 text-xs font-semibold"
+              >
+                Pending
+              </span>
+              <div class="flex items-center gap-1 text-gray-400">
+                <span class="material-symbols-outlined text-[16px]"
+                  >account_balance_wallet</span
+                >
+                <span class="text-xs">Tunai</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date Header -->
+        <div class="flex items-center justify-between pt-4">
+          <h2
+            class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+          >
+            Kemarin
+          </h2>
+          <span class="text-xs font-medium text-gray-400"
+            >Total: Rp 320.000</span
+          >
+        </div>
+
+        <!-- Card: Failed/Cancelled -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-soft border border-gray-100 dark:border-gray-700/50 flex flex-col gap-3 group active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden opacity-90"
+        >
+          <!-- Status Stripe -->
+          <div
+            class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500 rounded-l-2xl"
+          ></div>
+          <div class="flex justify-between items-start pl-2">
+            <div class="flex gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0"
+              >
+                <span class="material-symbols-outlined">close</span>
+              </div>
+              <div class="flex flex-col">
+                <span
+                  class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5"
+                  >#TRX-2845 • 10:45 WIB</span
+                >
+                <h3
+                  class="text-lg font-bold text-gray-400 dark:text-gray-500 line-through decoration-red-500/30 leading-tight"
+                >
+                  Rp 120.000
+                </h3>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-xs font-semibold"
+              >
+                Gagal
+              </span>
+              <div class="flex items-center gap-1 text-gray-400">
+                <span class="material-symbols-outlined text-[16px]"
+                  >credit_card</span
+                >
+                <span class="text-xs">Kartu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Success Older -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-soft border border-gray-100 dark:border-gray-700/50 flex flex-col gap-3 group active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
+        >
+          <!-- Status Stripe -->
+          <div
+            class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500 rounded-l-2xl"
+          ></div>
+          <div class="flex justify-between items-start pl-2">
+            <div class="flex gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400 shrink-0"
+              >
+                <span class="material-symbols-outlined">check</span>
+              </div>
+              <div class="flex flex-col">
+                <span
+                  class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-0.5"
+                  >#TRX-2844 • 09:20 WIB</span
+                >
+                <h3
+                  class="text-lg font-bold text-gray-900 dark:text-white leading-tight"
+                >
+                  Rp 200.000
+                </h3>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span
+                class="px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 text-xs font-semibold"
+              >
+                Lunas
+              </span>
+              <div class="flex items-center gap-1 text-gray-400">
+                <span class="material-symbols-outlined text-[16px]"
+                  >account_balance_wallet</span
+                >
+                <span class="text-xs">Tunai</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Divider for Empty State Demo -->
+        <div class="pt-12 pb-4 flex items-center gap-4">
+          <div class="h-px bg-gray-200 flex-1"></div>
+          <span class="text-xs text-gray-400 font-mono uppercase"
+            >Contoh Tampilan Kosong</span
+          >
+          <div class="h-px bg-gray-200 flex-1"></div>
+        </div>
+
+        <!-- Empty State Component -->
+        <div
+          class="flex flex-col items-center justify-center py-12 px-4 text-center rounded-3xl bg-white/50 border border-dashed border-gray-300 dark:border-gray-700"
+        >
+          <div
+            class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4 relative"
+          >
+            <div
+              class="absolute -top-1 -right-1 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-blue-500 text-sm"
+                >priority_high</span
+              >
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-4xl"
+              >receipt_long</span
+            >
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+            Belum Ada Transaksi
+          </h3>
+          <p class="text-gray-500 text-sm max-w-[240px] leading-relaxed">
+            Transaksi penjualan Anda akan muncul di sini. Mulai berjualan
+            sekarang!
+          </p>
+          <button
+            class="mt-6 text-primary font-semibold text-sm flex items-center gap-1 btn-press"
+          >
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            Buat Transaksi Baru
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Floating Action Button (FAB) - Di atas navigasi -->
+    <div class="fixed bottom-24 right-4 z-50">
+      <a
+        href="../kasir/buat_transaksi.html"
+        class="flex items-center justify-center gap-2 px-5 py-3 bg-primary text-white rounded-full shadow-xl shadow-primary/40 hover:bg-primary-dark transition-all duration-300 hover:scale-105 active:scale-95 btn-press font-semibold text-sm"
+      >
+        <span class="material-symbols-outlined text-[20px]">add</span>
+        <span>Buat Transaksi</span>
+      </a>
+    </div>
+
+    <!-- Bottom Navigation Container -->
+    <div id="bottomNav"></div>
+
+    <!-- Navigation Script -->
+    <script src="nav_kasir.js"></script>
+
+    <!-- QR Scanner Overlay -->
+    <div id="scannerOverlay" class="scanner-overlay">
+      <div
+        class="w-full px-6 flex justify-between items-center absolute top-0 pt-12 pb-4"
+      >
+        <button
+          id="btnCloseScanner"
+          class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[28px]">close</span>
+        </button>
+        <h2 class="text-white font-bold text-lg">Scan Barcode</h2>
+        <button
+          id="btnToggleFlash"
+          class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[24px]">flash_off</span>
+        </button>
+      </div>
+
+      <div class="scanner-frame">
+        <video
+          id="cameraPreview"
+          autoplay
+          playsinline
+          class="w-full h-full object-cover"
+        ></video>
+        <div class="scanner-corner top-left"></div>
+        <div class="scanner-corner top-right"></div>
+        <div class="scanner-corner bottom-left"></div>
+        <div class="scanner-corner bottom-right"></div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <p class="text-white/70 text-sm">Arahkan kamera ke barcode produk</p>
+        <p class="text-white/50 text-xs mt-2">
+          Produk akan otomatis ditambahkan ke keranjang
+        </p>
+      </div>
+
+      <div class="absolute bottom-0 w-full pb-12 pt-6 px-6">
+        <div class="text-center text-white/60 text-xs">
+          <span class="material-symbols-outlined text-[16px] align-middle mr-1"
+            >info</span
+          >
+          Scanner otomatis mendeteksi barcode
+        </div>
+      </div>
+    </div>
+
+    <!-- Scanner Script -->
+    <script>
+      let stream = null;
+      let flashEnabled = false;
+      const scannerOverlay = document.getElementById("scannerOverlay");
+      const cameraPreview = document.getElementById("cameraPreview");
+      const btnOpenScanner = document.getElementById("btnOpenScanner");
+      const btnCloseScanner = document.getElementById("btnCloseScanner");
+      const btnToggleFlash = document.getElementById("btnToggleFlash");
+      const btnCaptureScanner = document.getElementById("btnCaptureScanner");
+
+      // Demo: Daftar produk dengan barcode
+      const daftarProduk = [
+        { barcode: "8991234567890", nama: "Nasi Goreng Spesial", harga: 25000 },
+        { barcode: "8997654321098", nama: "Mie Ayam Bakso", harga: 20000 },
+        { barcode: "8998765432109", nama: "Es Teh Manis", harga: 5000 },
+        { barcode: "8999876543210", nama: "Ayam Geprek", harga: 18000 },
+      ];
+
+      // Cari produk berdasarkan barcode
+      function findProductByBarcode(barcode) {
+        return daftarProduk.find((p) => p.barcode === barcode);
+      }
+
+      // Open Scanner
+      btnOpenScanner.addEventListener("click", async () => {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: "environment",
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
+          });
+          cameraPreview.srcObject = stream;
+          scannerOverlay.classList.add("active");
+          document.body.style.overflow = "hidden";
+        } catch (err) {
+          console.error("Error accessing camera:", err);
+          alert(
+            "Tidak dapat mengakses kamera. Pastikan Anda memberikan izin akses kamera.",
+          );
+        }
+      });
+
+      // Close Scanner
+      function closeScanner() {
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          stream = null;
+        }
+        cameraPreview.srcObject = null;
+        scannerOverlay.classList.remove("active");
+        document.body.style.overflow = "";
+        flashEnabled = false;
+        btnToggleFlash.querySelector("span").textContent = "flash_off";
+      }
+
+      btnCloseScanner.addEventListener("click", closeScanner);
+
+      // Toggle Flash
+      btnToggleFlash.addEventListener("click", async () => {
+        if (!stream) return;
+
+        const track = stream.getVideoTracks()[0];
+        const capabilities = track.getCapabilities();
+
+        if (capabilities.torch) {
+          flashEnabled = !flashEnabled;
+          await track.applyConstraints({
+            advanced: [{ torch: flashEnabled }],
+          });
+          btnToggleFlash.querySelector("span").textContent = flashEnabled
+            ? "flash_on"
+            : "flash_off";
+        } else {
+          alert("Flash tidak tersedia pada perangkat ini");
+        }
+      });
+
+      // Capture/Scan Action - Simulasi scan barcode
+      btnCaptureScanner.addEventListener("click", () => {
+        // Simulasi: anggap barcode yang di-scan adalah produk pertama
+        const scannedBarcode = "8991234567890"; // Demo barcode
+        const product = findProductByBarcode(scannedBarcode);
+
+        if (product) {
+          // Simpan produk ke localStorage untuk diambil di halaman buat_transaksi
+          const cartItem = {
+            barcode: product.barcode,
+            nama: product.nama,
+            harga: product.harga,
+            qty: 1,
+            scannedAt: new Date().toISOString(),
+          };
+
+          // Ambil cart yang sudah ada atau buat baru
+          let cart = JSON.parse(localStorage.getItem("aipos_scan_cart") || "[]");
+
+          // Cek apakah produk sudah ada di cart
+          const existingIndex = cart.findIndex(
+            (item) => item.barcode === product.barcode,
+          );
+          if (existingIndex >= 0) {
+            cart[existingIndex].qty += 1;
+          } else {
+            cart.push(cartItem);
+          }
+
+          localStorage.setItem("aipos_scan_cart", JSON.stringify(cart));
+
+          closeScanner();
+
+          // Tampilkan notifikasi dan redirect
+          alert(`Produk "${product.nama}" ditambahkan ke keranjang!`);
+          window.location.href = "buat_transaksi.html";
+        } else {
+          alert(
+            "Produk tidak ditemukan. Pastikan barcode terdaftar di sistem.",
+          );
+        }
+      });
+
+      // Close on escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && scannerOverlay.classList.contains("active")) {
+          closeScanner();
+        }
+      });
+    </script>
+  </body>
+</html>
+
+

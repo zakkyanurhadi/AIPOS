@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tambah Variasi - AIPOS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#600000",
+              "background-light": "#F3F4F6",
+              "background-dark": "#111827",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1F2937",
+              "input-light": "#FFFFFF",
+              "input-dark": "#374151",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-body text-gray-900 dark:text-gray-100 h-screen overflow-hidden flex flex-col transition-colors duration-200"
+  >
+    <!-- Header -->
+    <header
+      class="bg-primary text-white px-6 pt-10 pb-4 shadow-md flex items-center shrink-0 z-20 sticky top-0"
+    >
+      <a
+        href="tambah_produk.html"
+        class="material-icons mr-3 hover:bg-white/20 rounded-full p-1.5 transition"
+      >
+        arrow_back
+      </a>
+      <h1 class="text-lg font-semibold tracking-wide flex-1">Tambah Variasi</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-4 pb-32 no-scrollbar space-y-4">
+      <!-- Detail Variasi -->
+      <section
+        class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm p-5 border border-gray-100 dark:border-gray-700"
+      >
+        <h2 class="font-semibold text-lg mb-5 text-gray-800 dark:text-white">
+          Detail Variasi
+        </h2>
+
+        <div class="mb-5">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Nama <span class="text-blue-500">*</span>
+          </label>
+          <input
+            id="namaVariasi"
+            class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-input-light dark:bg-input-dark text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3 placeholder-gray-400 dark:placeholder-gray-500"
+            placeholder="Masukkan Nama disini..."
+            type="text"
+          />
+        </div>
+
+        <div class="mb-1">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Kode <span class="text-blue-500">*</span>
+          </label>
+          <input
+            id="kodeVariasi"
+            class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-input-light dark:bg-input-dark text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3 placeholder-gray-400 dark:placeholder-gray-500"
+            placeholder="Contoh: ABC-123"
+            type="text"
+          />
+        </div>
+      </section>
+
+      <!-- Harga -->
+      <section
+        class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm p-5 border border-gray-100 dark:border-gray-700"
+      >
+        <h2 class="font-semibold text-lg mb-5 text-gray-800 dark:text-white">
+          Harga
+        </h2>
+
+        <div class="mb-5">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Harga Beli <span class="text-blue-500">*</span>
+          </label>
+          <div class="relative rounded-md shadow-sm">
+            <div
+              class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+            >
+              <span
+                class="text-gray-500 dark:text-gray-400 sm:text-sm font-medium"
+                >Rp</span
+              >
+            </div>
+            <input
+              id="hargaBeli"
+              class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-input-light dark:bg-input-dark text-gray-900 dark:text-white pl-10 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 placeholder-gray-400 dark:placeholder-gray-500"
+              placeholder="0"
+              type="number"
+            />
+          </div>
+        </div>
+
+        <div class="mb-1">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Harga Jual <span class="text-blue-500">*</span>
+          </label>
+          <div class="relative rounded-md shadow-sm">
+            <div
+              class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+            >
+              <span
+                class="text-gray-500 dark:text-gray-400 sm:text-sm font-medium"
+                >Rp</span
+              >
+            </div>
+            <input
+              id="hargaJual"
+              class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-input-light dark:bg-input-dark text-gray-900 dark:text-white pl-10 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 placeholder-gray-400 dark:placeholder-gray-500"
+              placeholder="0"
+              type="number"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Stok -->
+      <section
+        class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm p-5 border border-gray-100 dark:border-gray-700"
+      >
+        <h2 class="font-semibold text-lg mb-5 text-gray-800 dark:text-white">
+          Stok
+        </h2>
+
+        <div class="flex items-center justify-between mb-5">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Stok Tidak Terbatas</span
+          >
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="stokUnlimited" class="sr-only peer" type="checkbox" />
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-100 dark:peer-focus:ring-red-900 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"
+            ></div>
+          </label>
+        </div>
+
+        <div class="mb-1" id="stokInputContainer">
+          <label
+            class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5"
+          >
+            Stok <span class="text-blue-500">*</span>
+          </label>
+          <input
+            id="stokVariasi"
+            class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-input-light dark:bg-input-dark text-gray-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-3 px-3 placeholder-gray-400 dark:placeholder-gray-500"
+            placeholder="0"
+            type="number"
+          />
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Buttons -->
+    <footer
+      class="bg-card-light dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 p-4 fixed bottom-0 left-0 right-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+    >
+      <div class="flex gap-4 w-full">
+        <a
+          href="tambah_produk.html"
+          class="flex-1 text-center bg-white dark:bg-transparent text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 font-semibold py-3.5 px-4 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 active:scale-[0.98] transition"
+        >
+          Batal
+        </a>
+        <button
+          onclick="submitVariasi()"
+          class="flex-1 bg-primary text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition"
+        >
+          Submit
+        </button>
+      </div>
+    </footer>
+
+    <script>
+      // Toggle stok input visibility
+      document
+        .getElementById("stokUnlimited")
+        .addEventListener("change", function () {
+          const stokContainer = document.getElementById("stokInputContainer");
+          if (this.checked) {
+            stokContainer.classList.add("opacity-50", "pointer-events-none");
+          } else {
+            stokContainer.classList.remove("opacity-50", "pointer-events-none");
+          }
+        });
+
+      function submitVariasi() {
+        const nama = document.getElementById("namaVariasi").value.trim();
+        const kode = document.getElementById("kodeVariasi").value.trim();
+        const hargaBeli = document.getElementById("hargaBeli").value;
+        const hargaJual = document.getElementById("hargaJual").value;
+        const stok = document.getElementById("stokVariasi").value;
+        const unlimitedStok = document.getElementById("stokUnlimited").checked;
+
+        if (!nama) {
+          alert("Nama variasi tidak boleh kosong");
+          return;
+        }
+        if (!kode) {
+          alert("Kode variasi tidak boleh kosong");
+          return;
+        }
+        if (!hargaBeli) {
+          alert("Harga beli tidak boleh kosong");
+          return;
+        }
+        if (!hargaJual) {
+          alert("Harga jual tidak boleh kosong");
+          return;
+        }
+        if (!unlimitedStok && !stok) {
+          alert("Stok tidak boleh kosong");
+          return;
+        }
+
+        alert('Variasi "' + nama + '" berhasil ditambahkan');
+        window.location.href = "tambah_produk.html";
+      }
+    </script>
+  </body>
+</html>
+

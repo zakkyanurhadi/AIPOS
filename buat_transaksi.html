@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AIPOS - Buat Transaksi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#1e40af",
+              secondary: "#333333",
+              "background-light": "#f8f6f6",
+              "background-dark": "#1a1a1a",
+              "card-light": "#ffffff",
+              "card-dark": "#2d2d2d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              xl: "12px",
+              "2xl": "16px",
+              "3xl": "24px",
+            },
+            boxShadow: {
+              soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+              card: "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .line-clamp-1 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+      }
+      @keyframes cartBounce {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+      .cart-bounce {
+        animation: cartBounce 0.3s ease-in-out;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-100 flex flex-col relative overflow-x-hidden antialiased"
+  >
+    <!-- Fixed Top Section (Header + Search) - Combined to avoid gap -->
+    <div class="fixed top-0 left-0 right-0 z-50">
+      <!-- Header -->
+      <header class="bg-white dark:bg-card-dark h-14">
+        <div class="px-4 h-full flex items-center justify-between relative">
+          <!-- Tombol Kembali (Kiri) -->
+          <button
+            id="btnBack"
+            aria-label="Kembali"
+            class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white transition-colors z-10"
+          >
+            <span class="material-symbols-outlined">arrow_back</span>
+          </button>
+
+          <!-- Judul (Tengah Absolut) -->
+          <h1
+            class="absolute left-1/2 -translate-x-1/2 text-base font-bold text-gray-900 dark:text-white tracking-tight"
+          >
+            Buat Transaksi
+          </h1>
+
+          <!-- Placeholder untuk keseimbangan (Kanan) -->
+          <div class="w-10 h-10"></div>
+        </div>
+      </header>
+
+      <!-- Search & Filter Section -->
+      <div
+        class="bg-background-light dark:bg-background-dark border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm"
+      >
+        <div class="px-4 py-3">
+          <!-- Search Bar -->
+          <div
+            class="relative group shadow-sm rounded-xl bg-white dark:bg-card-dark border border-gray-200/50 dark:border-gray-700/50 mb-3"
+          >
+            <div
+              class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"
+            >
+              <span
+                class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors"
+                >search</span
+              >
+            </div>
+            <input
+              id="searchInput"
+              class="block w-full pl-11 pr-4 py-3 rounded-xl bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm font-medium"
+              placeholder="Cari produk..."
+              type="text"
+            />
+          </div>
+
+          <!-- Filter Chips -->
+          <div
+            class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"
+            id="categoryFilters"
+          >
+            <button
+              data-category="all"
+              class="category-btn px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold shadow-md shadow-primary/20 shrink-0 transition-all active:scale-95"
+            >
+              Semua
+            </button>
+            <button
+              data-category="coffee"
+              class="category-btn px-5 py-2 rounded-xl bg-white dark:bg-card-dark text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm font-medium shrink-0 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-primary transition-colors active:scale-95"
+            >
+              Coffee
+            </button>
+            <button
+              data-category="non-coffee"
+              class="category-btn px-5 py-2 rounded-xl bg-white dark:bg-card-dark text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm font-medium shrink-0 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-primary transition-colors active:scale-95"
+            >
+              Non-Coffee
+            </button>
+            <button
+              data-category="makanan"
+              class="category-btn px-5 py-2 rounded-xl bg-white dark:bg-card-dark text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm font-medium shrink-0 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-primary transition-colors active:scale-95"
+            >
+              Makanan
+            </button>
+            <button
+              data-category="snack"
+              class="category-btn px-5 py-2 rounded-xl bg-white dark:bg-card-dark text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm font-medium shrink-0 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-primary transition-colors active:scale-95"
+            >
+              Snack
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer untuk fixed top section -->
+    <div class="h-[180px]"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full pb-56">
+      <div class="px-4 mb-6">
+        <h2
+          class="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
+        >
+          <span class="w-1 h-4 bg-primary rounded-full"></span>
+          Pilih Produk
+        </h2>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-2 gap-3" id="productGrid">
+          <!-- Products will be rendered by JavaScript -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Fixed Bottom Cart Summary -->
+    <div
+      class="fixed bottom-0 left-0 w-full bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-700 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] z-50 rounded-t-3xl"
+    >
+      <div class="px-5 pt-4 pb-8">
+        <div class="space-y-2 mb-4">
+          <div
+            class="flex justify-between text-xs text-gray-500 dark:text-gray-400"
+          >
+            <span>Subtotal (<span id="itemCount">0</span> Item)</span>
+            <span
+              class="font-medium text-gray-900 dark:text-white tabular-nums"
+              id="subtotalDisplay"
+              >Rp 0</span
+            >
+          </div>
+
+          <div
+            class="flex justify-between items-center pt-2 border-t border-dashed border-gray-200 dark:border-gray-700/50 mt-2"
+          >
+            <span class="text-sm font-bold text-gray-900 dark:text-white"
+              >Total Tagihan</span
+            >
+            <span
+              class="text-lg font-bold text-primary tabular-nums"
+              id="totalDisplay"
+              >Rp 0</span
+            >
+          </div>
+        </div>
+        <button
+          id="btnCheckout"
+          class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-primary/30 active:scale-[0.98] transition-all flex items-center justify-between px-6 group disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled
+        >
+          <span class="text-sm font-medium opacity-90">Keranjang</span>
+          <div class="flex items-center gap-2">
+            <span class="text-base font-bold" id="cartTotalDisplay">Rp 0</span>
+            <span
+              class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform"
+              >arrow_forward</span
+            >
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // Data Produk Dummy
+      const products = [
+        {
+          id: 1,
+          name: "Espresso Single",
+          price: 15000,
+          stock: 12,
+          category: "coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuDZ9WCDvRfPuelACQ0N1nPJhGsX4v6B7mZD6bp9RPCB9Rd52wMHy7WOHhAWwJJjxxDe7wpXYRfP3kyLpGLkxmYqEhSiRvyAQLECdb5Xc5Q93xRZ_PAvXCG4-ED2tOul57UNcTMMMf9VY45bYcOYj3loAE-JhYR6BsBwAJZ9P8tEEYr771ZEDA8jUGyVSREtoVUTgk0ReZHrDs0nkPo-zS81pQQwYdDVG1OQ27U8czQeJE50pK9inJ99kzIUunJiyUwFdcYMRU3nP9Q",
+        },
+        {
+          id: 2,
+          name: "Matcha Latte",
+          price: 24000,
+          stock: 8,
+          category: "non-coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuBGgHRc7mXHsqmVgeWYD4tuHnLCFKtpVUeMUI_WDEp0A7Z0DelBmvXsjcbzNkNr1LMmhPrWoxdkkuHi209O8a4N9KXdDTjhT32hfTTCIHQdlKpnqsQ-cLPm4QLX02PlqRbVkixYt8cOACKcxWFoli2OCC_uhOJEr2GYMp5CatUkkjbMKq7OgOYCqKLSnff4hofAMSRe0H_gng6RAcdzimcRsCaheZ27dZI-1YPETJR2FGFO2CJu8zsMrRT7qwnSre8XouCWhzH4M-0",
+        },
+        {
+          id: 3,
+          name: "Choco Cake",
+          price: 18000,
+          stock: 5,
+          category: "makanan",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuC-YhXUiTpnzJpFebg9vopZcd3HqjjAK1lOx_L6WklwZjDVS_jrd0oqoSO-ebO8rsqRo60auPlrrM7yrPzWiBBx_eXGFFKwlVELnFgMobl3VM_Sc5Kmky_-U_U51iST_R7SEI65CwiObCIdMwkhP3_b5VkE9ssK6KFzcqE6M_znzdE6PkNoxUBOIvLJhf453OFy-lejOlOFs16GJzPJTgFyTagfaRk4SwUpbkVxL0bWD1Ef-AnMbcRz2eyOyHrFgQ6GRT6W_oRjJWk",
+        },
+        {
+          id: 4,
+          name: "Butter Croissant",
+          price: 12000,
+          stock: 0,
+          category: "snack",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuA1KOWXxIMwjWqbFId92Hz8cQQDFCAlxUwaBe1Ne6oC3u9Q4Dp01dtBumikM9hJjVHrXPFcLQ9cep36uRys6GY0C5F0Llhh5yHJ4N8JNhOLTGd-3zfbnH4fCzxdASfsypt6VGFgxizaXQ6n5Ng-bOYM_G0uRRwGf_G6AgMP5td-MwcfC2kQNaEzLBgq0_lUkjD5MJCj5-LjrMNlBpqJisGl3HwfN-p6ADiPKcSqbE6gsGvlGsQPQS1BL4rusmEcE09NqMtuakUCaBI",
+        },
+        {
+          id: 5,
+          name: "Cappuccino",
+          price: 22000,
+          stock: 15,
+          category: "coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuDZ9WCDvRfPuelACQ0N1nPJhGsX4v6B7mZD6bp9RPCB9Rd52wMHy7WOHhAWwJJjxxDe7wpXYRfP3kyLpGLkxmYqEhSiRvyAQLECdb5Xc5Q93xRZ_PAvXCG4-ED2tOul57UNcTMMMf9VY45bYcOYj3loAE-JhYR6BsBwAJZ9P8tEEYr771ZEDA8jUGyVSREtoVUTgk0ReZHrDs0nkPo-zS81pQQwYdDVG1OQ27U8czQeJE50pK9inJ99kzIUunJiyUwFdcYMRU3nP9Q",
+        },
+        {
+          id: 6,
+          name: "Teh Tarik",
+          price: 18000,
+          stock: 10,
+          category: "non-coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuBGgHRc7mXHsqmVgeWYD4tuHnLCFKtpVUeMUI_WDEp0A7Z0DelBmvXsjcbzNkNr1LMmhPrWoxdkkuHi209O8a4N9KXdDTjhT32hfTTCIHQdlKpnqsQ-cLPm4QLX02PlqRbVkixYt8cOACKcxWFoli2OCC_uhOJEr2GYMp5CatUkkjbMKq7OgOYCqKLSnff4hofAMSRe0H_gng6RAcdzimcRsCaheZ27dZI-1YPETJR2FGFO2CJu8zsMrRT7qwnSre8XouCWhzH4M-0",
+        },
+      ];
+
+      // State Keranjang
+      let cart = {};
+      let activeCategory = "all";
+
+      // Format Rupiah
+      function formatRupiah(num) {
+        return "Rp " + num.toLocaleString("id-ID");
+      }
+
+      // Render Product Card
+      function renderProductCard(product) {
+        const isOutOfStock = product.stock === 0;
+        const cartQty = cart[product.id] || 0;
+
+        return `
+          <div class="bg-white dark:bg-card-dark rounded-2xl p-3 shadow-card border border-gray-100 dark:border-gray-700/50 flex flex-col relative group ${
+            isOutOfStock ? "opacity-75" : ""
+          }" data-product-id="${product.id}">
+            <div class="aspect-square rounded-xl bg-gray-100 dark:bg-gray-800 mb-3 overflow-hidden relative ${
+              isOutOfStock ? "grayscale" : ""
+            }">
+              <img
+                alt="${product.name}"
+                class="w-full h-full object-cover ${
+                  !isOutOfStock ? "group-hover:scale-105" : ""
+                } transition-transform duration-500"
+                src="${product.image}"
+              />
+              <div class="absolute top-2 right-2 bg-white/90 dark:bg-black/60 backdrop-blur px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                isOutOfStock
+                  ? "text-blue-500"
+                  : "text-gray-700 dark:text-gray-300"
+              }">
+                ${isOutOfStock ? "Habis" : "Stok: " + product.stock}
+              </div>
+              ${
+                isOutOfStock
+                  ? `
+                <div class="absolute inset-0 bg-black/10 flex items-center justify-center">
+                  <span class="bg-black/70 text-white text-[10px] font-bold px-2 py-1 rounded-full">Habis</span>
+                </div>
+              `
+                  : ""
+              }
+
+            </div>
+            <div class="flex-1 flex flex-col">
+              <h3 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">
+                ${product.name}
+              </h3>
+              <div class="mt-auto flex items-center justify-between pt-2">
+                <span class="font-bold ${
+                  isOutOfStock ? "text-gray-500" : "text-primary"
+                } text-sm">${formatRupiah(product.price)}</span>
+                ${
+                  isOutOfStock
+                    ? `
+                  <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed" disabled>
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                  </button>
+                `
+                    : cartQty > 0
+                    ? `
+                  <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
+                    <button onclick="removeFromCart(${product.id})" class="w-7 h-7 flex items-center justify-center rounded-md bg-white dark:bg-gray-700 shadow-sm text-gray-600 dark:text-gray-300 active:scale-95 transition-transform border border-gray-200 dark:border-gray-600 hover:text-blue-500 hover:border-blue-300">
+                      <span class="material-symbols-outlined text-[16px]">remove</span>
+                    </button>
+                    <span class="font-bold text-gray-900 dark:text-white w-6 text-center text-sm tabular-nums">${cartQty}</span>
+                    <button onclick="addToCart(${product.id})" class="w-7 h-7 flex items-center justify-center rounded-md bg-primary text-white shadow-sm shadow-primary/30 active:scale-95 transition-transform hover:bg-primary-dark">
+                      <span class="material-symbols-outlined text-[16px]">add</span>
+                    </button>
+                  </div>
+                `
+                    : `
+                  <button onclick="addToCart(${product.id})" class="add-btn w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white shadow-md shadow-primary/20 active:scale-90 hover:bg-primary-dark transition-all">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                  </button>
+                `
+                }
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Render All Products
+      function renderProducts() {
+        const grid = document.getElementById("productGrid");
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        let filteredProducts = products;
+
+        // Filter by category
+        if (activeCategory !== "all") {
+          filteredProducts = filteredProducts.filter(
+            (p) => p.category === activeCategory
+          );
+        }
+
+        // Filter by search
+        if (searchTerm) {
+          filteredProducts = filteredProducts.filter((p) =>
+            p.name.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        if (filteredProducts.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-2 py-12 text-center">
+              <span class="material-symbols-outlined text-gray-300 text-5xl mb-3">search_off</span>
+              <p class="text-gray-500 text-sm">Produk tidak ditemukan</p>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = filteredProducts.map(renderProductCard).join("");
+        }
+      }
+
+      // Add to Cart
+      function addToCart(productId) {
+        const product = products.find((p) => p.id === productId);
+        if (!product || product.stock === 0) return;
+
+        const currentQty = cart[productId] || 0;
+        if (currentQty < product.stock) {
+          cart[productId] = currentQty + 1;
+          updateCartDisplay();
+          renderProducts();
+
+          // Bounce animation on button
+          const btn = document.getElementById("btnCheckout");
+          btn.classList.add("cart-bounce");
+          setTimeout(() => btn.classList.remove("cart-bounce"), 300);
+        } else {
+          alert("Stok tidak mencukupi!");
+        }
+      }
+
+      // Remove from Cart
+      function removeFromCart(productId) {
+        const currentQty = cart[productId] || 0;
+        if (currentQty > 1) {
+          cart[productId] = currentQty - 1;
+        } else {
+          delete cart[productId];
+        }
+        updateCartDisplay();
+        renderProducts();
+      }
+
+      // Update Cart Display
+      function updateCartDisplay() {
+        let totalItems = 0;
+        let subtotal = 0;
+
+        for (const [productId, qty] of Object.entries(cart)) {
+          const product = products.find((p) => p.id === parseInt(productId));
+          if (product) {
+            totalItems += qty;
+            subtotal += product.price * qty;
+          }
+        }
+
+        document.getElementById("itemCount").textContent = totalItems;
+        document.getElementById("subtotalDisplay").textContent =
+          formatRupiah(subtotal);
+        document.getElementById("totalDisplay").textContent =
+          formatRupiah(subtotal);
+        document.getElementById("cartTotalDisplay").textContent =
+          formatRupiah(subtotal);
+
+        const checkoutBtn = document.getElementById("btnCheckout");
+        checkoutBtn.disabled = totalItems === 0;
+      }
+
+      // Category Filter
+      document
+        .getElementById("categoryFilters")
+        .addEventListener("click", (e) => {
+          const btn = e.target.closest(".category-btn");
+          if (!btn) return;
+
+          // Update active state
+          document.querySelectorAll(".category-btn").forEach((b) => {
+            b.classList.remove(
+              "bg-primary",
+              "text-white",
+              "shadow-md",
+              "shadow-primary/20"
+            );
+            b.classList.add(
+              "bg-white",
+              "dark:bg-card-dark",
+              "text-gray-600",
+              "dark:text-gray-300",
+              "border",
+              "border-gray-200",
+              "dark:border-gray-700/50"
+            );
+          });
+          btn.classList.remove(
+            "bg-white",
+            "dark:bg-card-dark",
+            "text-gray-600",
+            "dark:text-gray-300",
+            "border",
+            "border-gray-200",
+            "dark:border-gray-700/50"
+          );
+          btn.classList.add(
+            "bg-primary",
+            "text-white",
+            "shadow-md",
+            "shadow-primary/20"
+          );
+
+          activeCategory = btn.dataset.category;
+          renderProducts();
+        });
+
+      // Search Input
+      document.getElementById("searchInput").addEventListener("input", () => {
+        renderProducts();
+      });
+
+      // Back Button - Redirect ke 3riwayat_transaksi.html
+      document.getElementById("btnBack").addEventListener("click", () => {
+        if (Object.keys(cart).length > 0) {
+          if (
+            confirm("Keranjang belanja akan dikosongkan. Yakin ingin kembali?")
+          ) {
+            window.location.href = "3riwayat_transaksi.html";
+          }
+        } else {
+          window.location.href = "3riwayat_transaksi.html";
+        }
+      });
+
+      // Checkout Button - Redirect ke keranjang.html
+      document.getElementById("btnCheckout").addEventListener("click", () => {
+        if (Object.keys(cart).length === 0) return;
+
+        // Simpan cart ke localStorage agar bisa diakses di halaman keranjang
+        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("products", JSON.stringify(products));
+
+        // Redirect ke halaman keranjang
+        window.location.href = "keranjang.html";
+      });
+
+      // Initial Render
+      renderProducts();
+    </script>
+  </body>
+</html>
+

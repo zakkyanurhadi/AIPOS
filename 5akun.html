@@ -1,0 +1,374 @@
+<!doctype html>
+
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Akun - AIPOS</title>
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              secondary: "#333333",
+              "background-light": "#f2f2f7", // iOS grouped background style
+              "background-dark": "#000000",
+              "card-light": "#ffffff",
+              "card-dark": "#1c1c1e",
+              "separator-light": "#e5e5ea",
+              "separator-dark": "#38383a",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              "2xl": "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-secondary dark:text-white transition-colors duration-200"
+  >
+    <div
+      class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark"
+    >
+      <!-- TopAppBar -->
+      <header
+        class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-separator-light/50 dark:border-separator-dark/50"
+      >
+        <div class="flex items-center justify-center h-[52px] px-4">
+          <h2
+            class="text-secondary dark:text-white text-[17px] font-semibold leading-tight tracking-tight text-center"
+          >
+            Akun
+          </h2>
+        </div>
+      </header>
+      <main class="flex-1 pb-32 px-4">
+        <!-- ProfileHeader -->
+        <div class="flex flex-col items-center py-8 animate-fade-in">
+          <div class="relative mb-4">
+            <div
+              class="bg-center bg-no-repeat bg-cover rounded-full h-24 w-24 border-4 border-white dark:border-card-dark shadow-md"
+              data-alt="Close up portrait of a smiling Indonesian business owner"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBYnT0HvQ5I1TE7jmcVLiDWxaOnLtP-6l7uaRvZqQaT7z3fUFW5DTL7cMtH6EyKRBO3wEWUoVJpsBj1d39BNN5jHvGq5FSlIQ1tyqPAio90wz4iwGCY-jGIXg0jIGXMWL18SbThjT0i44X0_T7SOoe4bmMsPSKMWnUVXKMdirjMK4fEWEctg8Eb7DYVOC3DxTZUu9lBkAEFPWJMTOEUSL3rof6UST25tDodovXYEKGGTMvWcvL0iikm8KBg9w4A4aJwi8bqulQ9fWY&quot;);
+              "
+            ></div>
+            <div
+              class="absolute bottom-0 right-0 bg-primary rounded-full p-1.5 border-2 border-background-light dark:border-background-dark text-white flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-center justify-center gap-1 mb-6">
+            <h1
+              class="text-secondary dark:text-white text-xl font-bold leading-tight text-center"
+            >
+              Budi Santoso
+            </h1>
+            <p
+              class="text-gray-500 dark:text-gray-400 text-sm font-medium text-center"
+            >
+              Warung Berkah
+            </p>
+          </div>
+          <a
+            href="edit_profil.html"
+            class="flex w-full cursor-pointer items-center justify-center rounded-xl h-11 px-6 bg-primary text-white text-[15px] font-semibold hover:bg-primary/90 transition-colors shadow-sm active:scale-[0.98] transform duration-100"
+          >
+            Edit Profil
+          </a>
+        </div>
+        <!-- Section: Pengaturan Toko (Sesuai Gambar) -->
+        <div class="mb-6">
+          <h3
+            class="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider ml-4 mb-2"
+          >
+            Pengaturan Toko
+          </h3>
+          <div
+            class="bg-card-light dark:bg-card-dark rounded-xl overflow-hidden shadow-sm border border-separator-light/50 dark:border-separator-dark/50"
+          >
+            <!-- ListItem: Info Toko -->
+            <a
+              href="buat_toko.html"
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer border-b border-separator-light dark:border-separator-dark"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[22px]">info</span>
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-semibold flex-1"
+              >
+                Info Toko
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </a>
+            <!-- ListItem: Pengaturan -->
+            <a
+              href="pengaturan.html"
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer border-b border-separator-light dark:border-separator-dark"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[22px]"
+                  >settings</span
+                >
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-semibold flex-1"
+              >
+                Pengaturan
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </a>
+            <!-- ListItem: Kembali ke Daftar Aplikasi -->
+            <a
+              href="daftar_toko.html"
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[22px]">apps</span>
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-semibold flex-1"
+              >
+                Kembali ke Daftar Aplikasi
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </a>
+          </div>
+        </div>
+
+        <!-- Section: Bantuan & Dukungan -->
+        <div class="mb-6">
+          <h3
+            class="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider ml-4 mb-2"
+          >
+            Bantuan &amp; Dukungan
+          </h3>
+          <div
+            class="bg-card-light dark:bg-card-dark rounded-xl overflow-hidden shadow-sm border border-separator-light/50 dark:border-separator-dark/50"
+          >
+            <!-- ListItem: Email -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer border-b border-separator-light dark:border-separator-dark last:border-0"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[20px]">mail</span>
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-medium flex-1"
+              >
+                Hubungi via Email
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+            <!-- ListItem: WhatsApp -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer border-b border-separator-light dark:border-separator-dark last:border-0"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-[#25D366] shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[20px]">chat</span>
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-medium flex-1"
+              >
+                Hubungi via WhatsApp
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+            <!-- ListItem: Forum -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[20px]">forum</span>
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-medium flex-1"
+              >
+                Forum Komunitas
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+          </div>
+        </div>
+        <!-- Section: Info Legal -->
+        <div class="mb-6">
+          <h3
+            class="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider ml-4 mb-2"
+          >
+            Info Legal
+          </h3>
+          <div
+            class="bg-card-light dark:bg-card-dark rounded-xl overflow-hidden shadow-sm border border-separator-light/50 dark:border-separator-dark/50"
+          >
+            <!-- ListItem: Privacy -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer border-b border-separator-light dark:border-separator-dark last:border-0"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >shield</span
+                >
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-medium flex-1"
+              >
+                Kebijakan Privasi
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+            <!-- ListItem: Terms -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 shrink-0 w-9 h-9"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >description</span
+                >
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-medium flex-1"
+              >
+                Syarat &amp; Ketentuan
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+          </div>
+        </div>
+        <!-- Section: Zona Bahaya & Logout -->
+        <div class="mb-8">
+          <div
+            class="bg-card-light dark:bg-card-dark rounded-xl overflow-hidden shadow-sm border border-separator-light/50 dark:border-separator-dark/50"
+          >
+            <!-- ListItem: Logout -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer border-b border-separator-light dark:border-separator-dark"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 shrink-0 w-8 h-8"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >logout</span
+                >
+              </div>
+              <p
+                class="text-secondary dark:text-white text-[15px] font-medium flex-1"
+              >
+                Keluar
+              </p>
+              <span class="material-symbols-outlined text-gray-400 text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+            <!-- ListItem: Delete Account -->
+            <div
+              class="flex items-center gap-3 px-4 py-3.5 active:bg-blue-50 dark:active:bg-blue-900/20 transition-colors cursor-pointer"
+            >
+              <div
+                class="flex items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 shrink-0 w-8 h-8"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >delete_forever</span
+                >
+              </div>
+              <p class="text-blue-600 text-[15px] font-medium flex-1">
+                Hapus Akun
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Footer Version -->
+        <div class="flex flex-col items-center justify-center mt-2">
+          <p class="text-gray-400 text-xs font-normal">
+            AIPOS v1.2.0 (Build 204)
+          </p>
+        </div>
+      </main>
+    </div>
+    <!-- Bottom Navigation Container -->
+    <div id="bottomNav"></div>
+    <!-- Navigation Script -->
+    <script src="nav.js"></script>
+  </body>
+</html>
+

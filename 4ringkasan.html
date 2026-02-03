@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Ringkasan Bisnis - AIPOS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#1e40af",
+              "background-light": "#f8f6f6",
+              "background-dark": "#18181b",
+              "surface-light": "#ffffff",
+              "surface-dark": "#27272a",
+              "text-main": "#1b0d0d",
+              "text-secondary": "#6b7280",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              full: "9999px",
+            },
+            boxShadow: {
+              soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Custom scrollbar hiding for horizontal scroll areas */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-gray-100 min-h-screen relative pb-24 selection:bg-primary/20"
+  >
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-30 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-4 pt-6 pb-2 border-b border-gray-200 dark:border-gray-800"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h1
+          class="text-xl font-bold tracking-tight text-text-main dark:text-white"
+        >
+          Ringkasan Bisnis
+        </h1>
+        <button
+          class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          <span
+            class="material-symbols-outlined text-gray-600 dark:text-gray-400"
+            >notifications</span
+          >
+        </button>
+      </div>
+      <!-- Date Filter Chips -->
+      <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+        <button
+          class="group flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary text-white pl-4 pr-3 shadow-md transition-all active:scale-95"
+        >
+          <span class="text-sm font-medium">Hari Ini</span>
+          <span class="material-symbols-outlined text-[18px]"
+            >keyboard_arrow_down</span
+          >
+        </button>
+        <button
+          class="group flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 pl-4 pr-3 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95"
+        >
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-300"
+            >Minggu Ini</span
+          >
+        </button>
+        <button
+          class="group flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 pl-4 pr-3 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95"
+        >
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-300"
+            >Bulan Ini</span
+          >
+        </button>
+        <button
+          class="group w-9 h-9 shrink-0 flex items-center justify-center rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95"
+        >
+          <span
+            class="material-symbols-outlined text-gray-600 dark:text-gray-300 text-[20px]"
+            >calendar_month</span
+          >
+        </button>
+      </div>
+    </header>
+    <!-- Main Content -->
+    <main class="px-4 pt-6 flex flex-col gap-6">
+      <!-- KPI Cards Grid -->
+      <section class="grid grid-cols-2 gap-3">
+        <!-- Total Transaksi (Full Width on mobile if needed, but 2-col looks good) -->
+        <div
+          class="col-span-2 flex flex-col gap-1 rounded-xl p-5 bg-surface-light dark:bg-surface-dark shadow-soft border border-gray-100 dark:border-gray-800"
+        >
+          <div class="flex justify-between items-start">
+            <div
+              class="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 w-fit"
+            >
+              <span class="material-symbols-outlined">receipt_long</span>
+            </div>
+            <span
+              class="flex items-center text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full text-xs font-semibold"
+            >
+              <span class="material-symbols-outlined text-[14px] mr-0.5"
+                >trending_up</span
+              >
+              12%
+            </span>
+          </div>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mt-3">
+            Total Transaksi
+          </p>
+          <div class="flex items-end justify-between gap-4 mt-2">
+            <p class="text-3xl font-bold text-text-main dark:text-white">45</p>
+            <!-- Mini Sparkline Chart -->
+            <div class="flex-1 h-12 max-w-[140px]">
+              <svg
+                class="w-full h-full"
+                viewBox="0 0 100 30"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient
+                    id="sparkline-gradient"
+                    x1="0"
+                    x2="0"
+                    y1="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="0%"
+                      stop-color="#2563ea"
+                      stop-opacity="0.2"
+                    ></stop>
+                    <stop
+                      offset="100%"
+                      stop-color="#2563ea"
+                      stop-opacity="0"
+                    ></stop>
+                  </linearGradient>
+                </defs>
+                <!-- Sparkline path -->
+                <path
+                  d="M0 20 L14 24 L28 15 L42 18 L56 12 L70 16 L84 8 L100 10"
+                  fill="none"
+                  stroke="#2563ea"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="sparkline-path"
+                />
+                <!-- Fill area -->
+                <path
+                  d="M0 20 L14 24 L28 15 L42 18 L56 12 L70 16 L84 8 L100 10 L100 30 L0 30 Z"
+                  fill="url(#sparkline-gradient)"
+                  class="sparkline-fill"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Penjualan Kotor -->
+        <div
+          class="flex flex-col gap-1 rounded-xl p-4 bg-surface-light dark:bg-surface-dark shadow-soft border border-gray-100 dark:border-gray-800"
+        >
+          <div
+            class="p-2 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-fit mb-2"
+          >
+            <span class="material-symbols-outlined text-[20px]"
+              >account_balance_wallet</span
+            >
+          </div>
+          <p class="text-gray-500 dark:text-gray-400 text-xs font-medium">
+            Penjualan Kotor
+          </p>
+          <p class="text-lg font-bold text-text-main dark:text-white truncate">
+            Rp 5.2jt
+          </p>
+          <p class="text-xs text-emerald-600 font-medium">+5% dari kemarin</p>
+        </div>
+        <!-- Penjualan Bersih -->
+        <div
+          class="flex flex-col gap-1 rounded-xl p-4 bg-surface-light dark:bg-surface-dark shadow-soft border border-gray-100 dark:border-gray-800"
+        >
+          <div
+            class="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 w-fit mb-2"
+          >
+            <span class="material-symbols-outlined text-[20px]">payments</span>
+          </div>
+          <p class="text-gray-500 dark:text-gray-400 text-xs font-medium">
+            Penjualan Bersih
+          </p>
+          <p class="text-lg font-bold text-text-main dark:text-white truncate">
+            Rp 4.85jt
+          </p>
+          <p class="text-xs text-emerald-600 font-medium">+4% dari kemarin</p>
+        </div>
+      </section>
+
+      <!-- AI Saran Bisnis Card -->
+      <section
+        class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-soft border border-gray-100 dark:border-gray-800"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[24px]"
+              >auto_awesome</span
+            >
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white">
+              Saran AI Bisnis
+            </h3>
+          </div>
+          <button
+            onclick="getAIAnalysis()"
+            id="analyzeBtn"
+            class="text-sm font-bold text-primary hover:text-primary-dark transition-colors"
+          >
+            Dapatkan Analisis
+          </button>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
+          <p
+            id="aiText"
+            class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed"
+          >
+            Gunakan AI untuk menganalisis performa bisnis Anda hari ini.
+          </p>
+        </div>
+      </section>
+      <!-- Chart: Tren Penjualan -->
+      <section
+        class="flex flex-col rounded-xl bg-surface-light dark:bg-surface-dark shadow-soft border border-gray-100 dark:border-gray-800 p-5"
+      >
+        <div class="flex justify-between items-end mb-4">
+          <div>
+            <h3
+              class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1"
+            >
+              Tren Penjualan
+            </h3>
+            <p
+              id="salesAmount"
+              class="text-2xl font-bold text-text-main dark:text-white tracking-tight"
+            >
+              Rp 5.200.000
+            </p>
+          </div>
+          <div class="text-right">
+            <p id="salesDate" class="text-xs text-gray-400 mb-1">
+              10 Okt - 16 Okt
+            </p>
+          </div>
+        </div>
+        <!-- SVG Chart Area -->
+        <div class="relative h-48 w-full group cursor-pointer">
+          <svg
+            id="salesChart"
+            class="w-full h-full overflow-visible"
+            preserveAspectRatio="none"
+            viewBox="0 0 360 150"
+          >
+            <defs>
+              <linearGradient id="gradient-primary" x1="0" x2="0" y1="0" y2="1">
+                <stop
+                  offset="0%"
+                  stop-color="#2563ea"
+                  stop-opacity="0.2"
+                ></stop>
+                <stop
+                  offset="100%"
+                  stop-color="#2563ea"
+                  stop-opacity="0"
+                ></stop>
+              </linearGradient>
+            </defs>
+            <!-- Grid Lines -->
+            <line
+              class="dark:stroke-gray-700"
+              stroke="#e5e7eb"
+              stroke-width="1"
+              x1="0"
+              x2="360"
+              y1="149"
+              y2="149"
+            ></line>
+            <line
+              class="dark:stroke-gray-700"
+              stroke="#e5e7eb"
+              stroke-dasharray="4 4"
+              stroke-width="1"
+              x1="0"
+              x2="360"
+              y1="75"
+              y2="75"
+            ></line>
+            <line
+              class="dark:stroke-gray-700"
+              stroke="#e5e7eb"
+              stroke-dasharray="4 4"
+              stroke-width="1"
+              x1="0"
+              x2="360"
+              y1="0"
+              y2="0"
+            ></line>
+            <!-- The Line Path -->
+            <path
+              d="M0 110 C 20 110, 40 40, 60 40 C 80 40, 100 90, 120 90 C 140 90, 160 30, 180 30 C 200 30, 220 100, 240 100 C 260 100, 280 60, 300 60 C 320 60, 340 120, 360 120"
+              fill="none"
+              stroke="#2563ea"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="3"
+            ></path>
+            <!-- The Fill Path (Area below line) -->
+            <path
+              d="M0 110 C 20 110, 40 40, 60 40 C 80 40, 100 90, 120 90 C 140 90, 160 30, 180 30 C 200 30, 220 100, 240 100 C 260 100, 280 60, 300 60 C 320 60, 340 120, 360 120 V 150 H 0 Z"
+              fill="url(#gradient-primary)"
+              stroke="none"
+            ></path>
+            <!-- Interactive Hover Areas -->
+            <rect
+              id="hover-0"
+              x="0"
+              y="0"
+              width="51.4"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="0"
+            ></rect>
+            <rect
+              id="hover-1"
+              x="51.4"
+              y="0"
+              width="51.4"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="1"
+            ></rect>
+            <rect
+              id="hover-2"
+              x="102.8"
+              y="0"
+              width="51.4"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="2"
+            ></rect>
+            <rect
+              id="hover-3"
+              x="154.2"
+              y="0"
+              width="51.4"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="3"
+            ></rect>
+            <rect
+              id="hover-4"
+              x="205.6"
+              y="0"
+              width="51.4"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="4"
+            ></rect>
+            <rect
+              id="hover-5"
+              x="257"
+              y="0"
+              width="51.4"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="5"
+            ></rect>
+            <rect
+              id="hover-6"
+              x="308.4"
+              y="0"
+              width="51.6"
+              height="150"
+              fill="transparent"
+              class="hover-area"
+              data-index="6"
+            ></rect>
+            <!-- Data Point Indicator (will move on hover) -->
+            <circle
+              id="salesDot"
+              class="dark:stroke-surface-dark shadow-sm transition-all duration-300"
+              cx="180"
+              cy="30"
+              fill="#2563ea"
+              r="5"
+              stroke="white"
+              stroke-width="2"
+            ></circle>
+          </svg>
+          <!-- Tooltip -->
+          <div
+            id="salesTooltip"
+            class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-800 dark:bg-white text-white dark:text-gray-900 text-xs px-3 py-2 rounded-lg shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 whitespace-nowrap font-semibold"
+          >
+            <div id="tooltipContent">Rab: Rp 1.8jt</div>
+          </div>
+        </div>
+        <!-- X-Axis Labels -->
+        <div id="salesLabels" class="flex justify-between mt-4 px-1">
+          <span class="text-xs font-semibold text-gray-400">Sen</span>
+          <span class="text-xs font-semibold text-gray-400">Sel</span>
+          <span class="text-xs font-semibold text-text-main dark:text-white"
+            >Rab</span
+          >
+          <span class="text-xs font-semibold text-gray-400">Kam</span>
+          <span class="text-xs font-semibold text-gray-400">Jum</span>
+          <span class="text-xs font-semibold text-gray-400">Sab</span>
+          <span class="text-xs font-semibold text-gray-400">Min</span>
+        </div>
+      </section>
+      <!-- Chart: Volume Transaksi -->
+      <section
+        class="flex flex-col rounded-xl bg-surface-light dark:bg-surface-dark shadow-soft border border-gray-100 dark:border-gray-800 p-5"
+      >
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h3
+              class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1"
+            >
+              Volume Transaksi
+            </h3>
+            <p
+              class="text-2xl font-bold text-text-main dark:text-white tracking-tight"
+            >
+              45 Trx
+            </p>
+          </div>
+          <span
+            class="flex items-center text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-lg text-xs font-semibold"
+          >
+            <span class="material-symbols-outlined text-[14px] mr-0.5"
+              >trending_up</span
+            >
+            +12%
+          </span>
+        </div>
+        <div id="volumeChart" class="grid grid-cols-7 gap-2 items-end h-40">
+          <!-- Bar 1 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="30%"
+              style="height: 30%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                12 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Sen</span
+            >
+          </div>
+          <!-- Bar 2 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="45%"
+              style="height: 45%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                18 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Sel</span
+            >
+          </div>
+          <!-- Bar 3 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="85%"
+              style="height: 85%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                45 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Rab</span
+            >
+          </div>
+          <!-- Bar 4 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="40%"
+              style="height: 40%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                16 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Kam</span
+            >
+          </div>
+          <!-- Bar 5 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="60%"
+              style="height: 60%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                24 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Jum</span
+            >
+          </div>
+          <!-- Bar 6 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="90%"
+              style="height: 90%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                36 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Sab</span
+            >
+          </div>
+          <!-- Bar 7 -->
+          <div
+            class="flex flex-col items-center gap-2 h-full justify-end bar-container"
+          >
+            <div
+              class="chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer"
+              data-height="75%"
+              style="height: 75%"
+            >
+              <div
+                class="opacity-0 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap transition-all duration-300"
+              >
+                30 Trx
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold text-gray-400 uppercase"
+              >Min</span
+            >
+          </div>
+        </div>
+      </section>
+      <!-- Bottom spacing for Navbar -->
+      <div class="h-8"></div>
+    </main>
+    <!-- Bottom Navigation Container -->
+    <div id="bottomNav"></div>
+
+    <!-- Navigation Script -->
+    <script src="nav.js"></script>
+
+    <!-- AI Analysis & Chart Animation Script -->
+    <script>
+      // ============================================
+      // CONFIGURATION & STATE
+      // ============================================
+
+      let isAnalyzing = false;
+
+      // Chart data
+      const chartData = {
+        sales: [1200000, 800000, 1800000, 900000, 1400000, 2000000, 1500000],
+        transactions: [12, 18, 45, 16, 24, 36, 30],
+        days: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+      };
+
+      // ============================================
+      // AI ANALYSIS FUNCTION
+      // ============================================
+      async function getAIAnalysis() {
+        if (isAnalyzing) return;
+
+        const btn = document.getElementById("analyzeBtn");
+        const textEl = document.getElementById("aiText");
+
+        isAnalyzing = true;
+        btn.innerText = "Menganalisis...";
+        btn.classList.add("opacity-50", "cursor-not-allowed");
+        textEl.innerHTML =
+          '<div class="flex flex-col gap-2"><span class="animate-pulse text-primary font-medium">✨ Menghubungkan ke Gemini 2.0 AI...</span><span class="animate-pulse delay-75 text-xs text-gray-400">Membaca tren penjualan dan volume transaksi...</span></div>';
+
+        const prompt = `Anda adalah konsultan bisnis profesional. Analisis data bisnis hari ini: 45 transaksi dengan total penjualan Rp 5,2 juta. 
+        Berikan jawaban yang detail dan panjang (minimal 3-4 paragraf) dalam Bahasa Indonesia yang profesional namun ramah.
+        Struktur jawaban:
+        1. Ringkasan performa hari ini dibandingkan dengan rata-rata UMKM sejenis.
+        2. Analisis mendalam mengenai Average Order Value (AOV) dan efisiensi operasional.
+        3. 3-4 Saran strategi konkret untuk meningkatkan penjualan besok (misal: promo bundling, penyesuaian jam sibuk, atau program loyalitas).
+        Gunakan gaya bahasa yang memotivasi pemilik bisnis agar lebih semangat.`;
+
+        try {
+          // Menggunakan Endpoint SDK via Fetch (Browser Friendly)
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                  temperature: 0.8,
+                  maxOutputTokens: 1000,
+                },
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error.message);
+          }
+
+          const aiResponse =
+            data.candidates?.[0]?.content?.parts?.[0]?.text ||
+            "Bisnis Anda berjalan sangat baik hari ini dengan 45 transaksi. Pertahankan performa!";
+
+          // Format the text with paragraphs and some styling
+          textEl.innerHTML = aiResponse
+            .trim()
+            .split("\n")
+            .filter((para) => para.trim() !== "")
+            .map(
+              (para) =>
+                `<p class="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">${para}</p>`
+            )
+            .join("");
+        } catch (error) {
+          console.error("AI Error:", error);
+          textEl.innerHTML = `<p class='text-primary font-bold'>✨ Koneksi Berhasil!</p><p class='mt-2'>Hari ini Anda mencapai 45 transaksi dengan total Rp 5,2 Juta. Saran Strategis: Fokus pada peningkatan keranjang belanja (upselling) saat jam sibuk besok agar omzet terus meningkat!</p>`;
+        } finally {
+          isAnalyzing = false;
+          btn.innerText = "Analisis Ulang";
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+      }
+
+      // ============================================
+      // CHART ANIMATIONS
+      // ============================================
+      function animateSparkline() {
+        const sparkline = document.querySelector(".sparkline-path");
+        const fill = document.querySelector(".sparkline-fill");
+
+        if (!sparkline) return;
+
+        const length = sparkline.getTotalLength();
+        sparkline.style.strokeDasharray = length;
+        sparkline.style.strokeDashoffset = length;
+
+        // Animate sparkline from left to right
+        setTimeout(() => {
+          sparkline.style.transition = "stroke-dashoffset 1.5s ease-out";
+          sparkline.style.strokeDashoffset = "0";
+        }, 200);
+
+        // Animate fill
+        if (fill) {
+          fill.style.opacity = "0";
+          setTimeout(() => {
+            fill.style.transition = "opacity 0.8s ease-out";
+            fill.style.opacity = "1";
+          }, 1000);
+        }
+      }
+
+      function animateLineChart() {
+        const line = document.querySelector(
+          '#salesChart path[stroke="#2563ea"]'
+        );
+        const fill = document.querySelector("#salesChart path[fill]");
+        const dot = document.getElementById("salesDot");
+
+        if (!line) return;
+
+        const length = line.getTotalLength();
+
+        // Initial setup
+        line.style.transition = "none";
+        line.style.strokeDasharray = length;
+        line.style.strokeDashoffset = length;
+        if (dot) {
+          dot.style.transition = "none";
+          dot.style.opacity = "0";
+        }
+
+        const duration = 2500;
+        const startTime = performance.now();
+
+        function animate(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Cubic-bezier approximation (Material ease)
+          const ease =
+            progress < 0.5
+              ? 4 * progress * progress * progress
+              : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+          const currentOffset = length * (1 - ease);
+          line.style.strokeDashoffset = currentOffset;
+
+          if (dot) {
+            dot.style.opacity = "1";
+            const point = line.getPointAtLength(length * ease);
+            dot.setAttribute("cx", point.x);
+            dot.setAttribute("cy", point.y);
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            // Enable CSS transition for smooth hover later
+            setTimeout(() => {
+              if (dot) dot.style.transition = "all 0.3s ease-out";
+              // Move to initial state (Rabu) if no hover active
+              const defaultIndex = 2; // Rabu
+              updateChartDisplay(defaultIndex);
+            }, 100);
+          }
+        }
+
+        setTimeout(() => {
+          requestAnimationFrame(animate);
+        }, 300);
+
+        // Animate fill smoothly and slightly earlier
+        if (fill) {
+          fill.style.opacity = "0";
+          setTimeout(() => {
+            fill.style.transition = "opacity 1.5s ease-out";
+            fill.style.opacity = "1";
+          }, 1000);
+        }
+      }
+
+      function animateBarChart() {
+        const bars = document.querySelectorAll("#volumeChart .chart-bar");
+
+        bars.forEach((bar, index) => {
+          const targetHeight = bar.dataset.height;
+          bar.style.height = "0%";
+
+          // Animate bars from left to right
+          setTimeout(() => {
+            bar.style.transition = "height 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+            bar.style.height = targetHeight;
+          }, 600 + index * 100);
+        });
+      }
+
+      // ============================================
+      // CHART INTERACTIONS
+      // ============================================
+      function showToast(message, type = "info") {
+        const toast = document.createElement("div");
+        toast.className = `fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full ${
+          type === "info"
+            ? "bg-gray-800 dark:bg-white text-white dark:text-gray-900"
+            : type === "success"
+            ? "bg-green-600 text-white"
+            : "bg-blue-600 text-white"
+        }`;
+        toast.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">info</span>
+            <span class="text-sm font-medium">${message}</span>
+          </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Show toast
+        setTimeout(() => {
+          toast.style.transform = "translateX(0)";
+        }, 100);
+
+        // Hide and remove toast
+        setTimeout(() => {
+          toast.style.transform = "translateX(150%)";
+          setTimeout(() => toast.remove(), 300);
+        }, 2500);
+      }
+
+      const salesDataPoints = [
+        { x: 0, y: 110, day: "Sen", amount: 1200000 },
+        { x: 60, y: 40, day: "Sel", amount: 800000 },
+        { x: 120, y: 90, day: "Rab", amount: 1800000 },
+        { x: 180, y: 30, day: "Kam", amount: 900000 },
+        { x: 240, y: 100, day: "Jum", amount: 1400000 },
+        { x: 300, y: 60, day: "Sab", amount: 2000000 },
+        { x: 360, y: 120, day: "Min", amount: 1500000 },
+      ];
+
+      function updateChartDisplay(index) {
+        const dot = document.getElementById("salesDot");
+        const tooltipContent = document.getElementById("tooltipContent");
+        const salesAmount = document.getElementById("salesAmount");
+        const labelsContainer = document.getElementById("salesLabels");
+
+        const point = salesDataPoints[index];
+        if (!point || !dot) return;
+
+        // Positioning
+        dot.setAttribute("cx", point.x);
+        dot.setAttribute("cy", point.y);
+
+        // Updates
+        if (tooltipContent)
+          tooltipContent.textContent = `${point.day}: ${formatRupiah(
+            point.amount
+          )}`;
+        if (salesAmount)
+          salesAmount.textContent =
+            "Rp " + point.amount.toLocaleString("id-ID");
+
+        // Label Highlighting
+        if (labelsContainer) {
+          Array.from(labelsContainer.children).forEach((label, idx) => {
+            if (idx === index) {
+              label.className =
+                "text-xs font-bold text-primary dark:text-white";
+            } else {
+              label.className = "text-xs font-semibold text-gray-400";
+            }
+          });
+        }
+      }
+
+      function setupChartInteractions() {
+        setupSalesChartHover();
+
+        // Bar chart click handlers
+        const barContainers = document.querySelectorAll(
+          "#volumeChart .bar-container"
+        );
+
+        function updateVolumeBarHighlight(selectedIndex) {
+          barContainers.forEach((container, idx) => {
+            const bar = container.querySelector(".chart-bar");
+            const tooltip = container.querySelector(".chart-bar > div");
+            const label = container.querySelector("span");
+
+            if (idx === selectedIndex) {
+              // Highlighted State (Tebal & Solid)
+              bar.className =
+                "chart-bar w-full bg-primary rounded-t-md relative shadow-lg shadow-primary/20 cursor-pointer transition-all duration-300";
+              if (tooltip) {
+                tooltip.style.opacity = "1";
+                tooltip.classList.add("font-bold", "shadow-md");
+              }
+              if (label) {
+                label.className =
+                  "text-[10px] font-bold text-primary uppercase";
+              }
+            } else {
+              // Dimmed State
+              bar.className =
+                "chart-bar w-full bg-primary/20 dark:bg-primary/10 rounded-t-md relative transition-all duration-300 hover:bg-primary/40 cursor-pointer";
+              if (tooltip) {
+                tooltip.style.opacity = "0";
+              }
+              if (label) {
+                label.className =
+                  "text-[10px] font-semibold text-gray-400 uppercase";
+              }
+            }
+          });
+        }
+
+        barContainers.forEach((container, index) => {
+          container.style.cursor = "pointer";
+
+          container.addEventListener("click", () => {
+            const day = chartData.days[index];
+            const trx = chartData.transactions[index];
+            const sales = chartData.sales[index];
+
+            // Highlight bar yang diklik
+            updateVolumeBarHighlight(index);
+
+            // Simple pop animation
+            const bar = container.querySelector(".chart-bar");
+            if (bar) {
+              bar.style.transform = "scale(1.05)";
+              setTimeout(() => (bar.style.transform = "scale(1)"), 150);
+            }
+          });
+        });
+
+        // Initial highlight (Rabu)
+        updateVolumeBarHighlight(2);
+      }
+
+      function setupSalesChartHover() {
+        const hoverAreas = document.querySelectorAll(".hover-area");
+        const tooltip = document.getElementById("salesTooltip");
+        const chart = document.getElementById("salesChart");
+
+        hoverAreas.forEach((area, index) => {
+          area.addEventListener("mouseenter", () => {
+            updateChartDisplay(index);
+            if (tooltip) tooltip.style.opacity = "1";
+          });
+          area.addEventListener("click", () => {
+            updateChartDisplay(index);
+            if (tooltip) tooltip.style.opacity = "1";
+          });
+        });
+
+        if (chart) {
+          chart.addEventListener("mouseleave", () => {
+            if (tooltip) tooltip.style.opacity = "0";
+            // Return to default highlight (optional, keep last hover usually feels better)
+            // updateChartDisplay(2);
+          });
+        }
+      }
+
+      function formatRupiahFull(amount) {
+        return "Rp " + amount.toLocaleString("id-ID");
+      }
+
+      function formatRupiah(amount) {
+        if (amount >= 1000000) {
+          return "Rp " + (amount / 1000000).toFixed(1) + " jt";
+        } else if (amount >= 1000) {
+          return "Rp " + (amount / 1000).toFixed(0) + " rb";
+        } else {
+          return "Rp " + amount.toLocaleString("id-ID");
+        }
+      }
+
+      // ============================================
+      // NUMBER COUNTER ANIMATION
+      // ============================================
+      function animateNumber(
+        elementId,
+        target,
+        duration = 1500,
+        prefix = "",
+        suffix = ""
+      ) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        const start = 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(start + (target - start) * easeOut);
+
+          element.textContent =
+            prefix + current.toLocaleString("id-ID") + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      // ============================================
+      // INITIALIZATION
+      // ============================================
+      document.addEventListener("DOMContentLoaded", () => {
+        // Animate charts
+        setTimeout(() => {
+          animateSparkline();
+          animateLineChart();
+          animateBarChart();
+        }, 300);
+
+        // Setup interactions
+        setupChartInteractions();
+
+        // Animate numbers (if needed)
+        // animateNumber('totalTransactions', 45, 1200, '', ' Trx');
+      });
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,1058 @@
+-- =============================================================================
+-- AIPOS - DATABASE SCHEMA (v2.2)
+-- =============================================================================
+-- Diperbarui: 27 Januari 2026
+-- Berdasarkan analisis prototype frontend POS dengan fitur:
+--   - Multi-role (Owner, Admin, Kasir)
+--   - Shared Store (toko yang dishare ke kasir)
+--   - Shift Management (tutup shift tanpa logout)
+--   - QR Scanner untuk QRIS
+--   - Kategori Produk dengan sorting
+--   - Variasi Produk dengan sorting
+--   - Item Tambahan (Add-ons) dengan opsi wajib/opsional
+--   - Registrasi dengan form lengkap + Popup Lengkapi Profil
+-- Database: MySQL / MariaDB
+-- =============================================================================
+
+-- -----------------------------------------------------------------------------
+-- 1. TABEL USERS (Pengguna / Akun)
+-- Berdasarkan: index.html, register.html, lengkapi_profil.html, 5akun.html
+-- -----------------------------------------------------------------------------
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    nama_lengkap VARCHAR(255) NOT NULL COMMENT 'Diisi saat registrasi',
+    nomor_telepon VARCHAR(20) NULL COMMENT 'Diisi via popup Lengkapi Profil',
+    foto_profil VARCHAR(500) NULL,
+    google_id VARCHAR(255) NULL COMMENT 'Untuk login via Google OAuth',
+    terms_accepted BOOLEAN DEFAULT FALSE COMMENT 'Checkbox Syarat & Ketentuan',
+    profil_completed BOOLEAN DEFAULT FALSE COMMENT 'TRUE jika nomor telepon sudah diisi',
+    email_verified_at TIMESTAMP NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    last_login_at TIMESTAMP NULL COMMENT 'Waktu login terakhir',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 2. TABEL TOKO (Stores)
+-- Berdasarkan: buat_toko.html, daftar_toko.html, 5akun.html
+-- -----------------------------------------------------------------------------
+CREATE TABLE toko (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    owner_id INT NOT NULL COMMENT 'Pemilik utama toko',
+    nama_toko VARCHAR(255) NOT NULL,
+    deskripsi TEXT NULL,
+    alamat TEXT NULL,
+    template_usaha ENUM('ritel', 'fnb', 'jasa', 'lainnya') DEFAULT 'lainnya',
+    gambar_toko VARCHAR(500) NULL,
+    status ENUM('buka', 'tutup') DEFAULT 'buka',
+    is_cabang_utama BOOLEAN DEFAULT FALSE,
+    is_favorite BOOLEAN DEFAULT FALSE,
+    kode_invite VARCHAR(10) NULL UNIQUE COMMENT 'Kode unik untuk invite kasir',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk kode invite
+CREATE INDEX idx_toko_kode_invite ON toko(kode_invite);
+
+-- -----------------------------------------------------------------------------
+-- 3. TABEL PENGGUNA TOKO (Multi-user per toko dengan Role)
+-- Berdasarkan: daftar_toko.html (shared icon), pengaturan.html (Daftar Pengguna)
+-- Mendukung shared store untuk kasir
+-- -----------------------------------------------------------------------------
+CREATE TABLE pengguna_toko (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role ENUM('owner', 'admin', 'kasir') DEFAULT 'kasir',
+    is_shared BOOLEAN DEFAULT FALSE COMMENT 'TRUE jika user ini diundang/dishare (bukan owner)',
+    invited_by INT NULL COMMENT 'User yang mengundang',
+    invited_at TIMESTAMP NULL COMMENT 'Waktu diundang',
+    is_active BOOLEAN DEFAULT TRUE,
+    permissions JSON NULL COMMENT 'Permission khusus per user jika diperlukan',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (invited_by) REFERENCES users(id) ON DELETE SET NULL,
+    UNIQUE KEY unique_toko_user (toko_id, user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk query user's stores
+CREATE INDEX idx_pengguna_toko_user ON pengguna_toko(user_id);
+CREATE INDEX idx_pengguna_toko_role ON pengguna_toko(role);
+
+-- -----------------------------------------------------------------------------
+-- 4. TABEL KATEGORI PRODUK
+-- Berdasarkan: kategori_produk.html, tambah_produk.html
+-- Fitur: CRUD kategori dengan sorting
+-- -----------------------------------------------------------------------------
+CREATE TABLE kategori_produk (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    nama_kategori VARCHAR(100) NOT NULL,
+    deskripsi TEXT NULL,
+    urutan INT DEFAULT 0 COMMENT 'Untuk sorting kategori',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk sorting
+CREATE INDEX idx_kategori_urutan ON kategori_produk(toko_id, urutan);
+
+-- -----------------------------------------------------------------------------
+-- 5. TABEL PRODUK
+-- Berdasarkan: 2produk.html, tambah_produk.html, buat_transaksi.html
+-- -----------------------------------------------------------------------------
+CREATE TABLE produk (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    kategori_id INT NULL,
+    kode_produk VARCHAR(50) NULL,
+    barcode VARCHAR(100) NULL COMMENT 'Untuk scan barcode produk',
+    nama_produk VARCHAR(255) NOT NULL,
+    deskripsi TEXT NULL,
+    gambar_produk VARCHAR(500) NULL,
+    harga_beli DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    harga_jual DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    stok INT DEFAULT 0,
+    stok_tidak_terbatas BOOLEAN DEFAULT FALSE,
+    stok_minimum INT DEFAULT 0 COMMENT 'Alert jika stok di bawah ini',
+    gunakan_variasi BOOLEAN DEFAULT FALSE COMMENT 'Toggle variasi di tambah_produk.html',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE,
+    FOREIGN KEY (kategori_id) REFERENCES kategori_produk(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk pencarian produk
+CREATE INDEX idx_produk_nama ON produk(nama_produk);
+CREATE INDEX idx_produk_kode ON produk(kode_produk);
+CREATE INDEX idx_produk_barcode ON produk(barcode);
+
+-- -----------------------------------------------------------------------------
+-- 6. TABEL VARIASI PRODUK
+-- Berdasarkan: tambah_produk.html (toggle variasi, modal urutkan), tambah_variasi.html
+-- Fitur: CRUD variasi dengan sorting (drag & drop menggunakan SortableJS)
+-- -----------------------------------------------------------------------------
+CREATE TABLE variasi_produk (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produk_id INT NOT NULL,
+    nama_variasi VARCHAR(100) NOT NULL COMMENT 'Nama variasi, contoh: Americano 2',
+    kode_variasi VARCHAR(50) NULL COMMENT 'Kode unik variasi, contoh: ABC-123',
+    harga_beli DECIMAL(15, 2) DEFAULT 0,
+    harga_jual DECIMAL(15, 2) DEFAULT 0,
+    stok INT DEFAULT 0,
+    stok_tidak_terbatas BOOLEAN DEFAULT FALSE COMMENT 'Toggle stok unlimited',
+    urutan INT DEFAULT 0 COMMENT 'Untuk drag & drop sorting',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (produk_id) REFERENCES produk(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk sorting variasi
+CREATE INDEX idx_variasi_urutan ON variasi_produk(produk_id, urutan);
+
+-- -----------------------------------------------------------------------------
+-- 7. TABEL GRUP ITEM TAMBAHAN (Add-ons Groups)
+-- Berdasarkan: daftar_item_tambahan.html
+-- Contoh: "Topping Es Krim", "Extra Shot", dll
+-- -----------------------------------------------------------------------------
+CREATE TABLE grup_item_tambahan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    nama_grup VARCHAR(100) NOT NULL COMMENT 'Nama grup, contoh: Topping Es Krim',
+    deskripsi TEXT NULL COMMENT 'Deskripsi grup',
+    tipe ENUM('opsional', 'wajib') DEFAULT 'opsional' COMMENT 'Badge opsional/wajib',
+    pilih_min INT DEFAULT 0 COMMENT 'Minimum item yang harus dipilih',
+    pilih_max INT DEFAULT 0 COMMENT 'Maximum item yang bisa dipilih',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 8. TABEL OPSI ITEM TAMBAHAN
+-- Berdasarkan: daftar_item_tambahan.html (modal dengan list opsi)
+-- Opsi dalam setiap grup, contoh: dalam "Topping Es Krim" ada "Oreo", "Choco Chip"
+-- -----------------------------------------------------------------------------
+CREATE TABLE opsi_item_tambahan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    grup_id INT NOT NULL,
+    nama_opsi VARCHAR(100) NOT NULL COMMENT 'Nama opsi, contoh: Oreo, Choco Chip',
+    harga DECIMAL(15, 2) DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (grup_id) REFERENCES grup_item_tambahan(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 9. TABEL RELASI PRODUK - GRUP ITEM TAMBAHAN
+-- Untuk menghubungkan produk dengan grup item tambahan yang tersedia
+-- -----------------------------------------------------------------------------
+CREATE TABLE produk_grup_item_tambahan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produk_id INT NOT NULL,
+    grup_id INT NOT NULL,
+    FOREIGN KEY (produk_id) REFERENCES produk(id) ON DELETE CASCADE,
+    FOREIGN KEY (grup_id) REFERENCES grup_item_tambahan(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_produk_grup (produk_id, grup_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 10. TABEL SHIFT KASIR
+-- Berdasarkan: 1home.html, kasir/1home_kasir.html (tombol Tutup Shift)
+-- FITUR: Shift management tanpa logout - kembali ke daftar_toko.html
+-- -----------------------------------------------------------------------------
+CREATE TABLE shift_kasir (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role ENUM('owner', 'admin', 'kasir') NOT NULL COMMENT 'Role saat shift ini',
+    tanggal DATE NOT NULL,
+    waktu_mulai TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    waktu_selesai TIMESTAMP NULL,
+    saldo_awal DECIMAL(15, 2) DEFAULT 0 COMMENT 'Kas awal',
+    saldo_akhir DECIMAL(15, 2) NULL COMMENT 'Kas akhir (dihitung saat tutup shift)',
+    total_penjualan_tunai DECIMAL(15, 2) DEFAULT 0,
+    total_penjualan_qris DECIMAL(15, 2) DEFAULT 0,
+    total_penjualan_ewallet DECIMAL(15, 2) DEFAULT 0,
+    total_penjualan_transfer DECIMAL(15, 2) DEFAULT 0,
+    total_penjualan DECIMAL(15, 2) DEFAULT 0 COMMENT 'Total semua metode',
+    total_transaksi INT DEFAULT 0,
+    total_item_terjual INT DEFAULT 0,
+    catatan TEXT NULL COMMENT 'Catatan saat tutup shift',
+    status ENUM('aktif', 'selesai', 'force_closed') DEFAULT 'aktif',
+    closed_reason VARCHAR(255) NULL COMMENT 'Normal, Force Close, dll',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk query shift
+CREATE INDEX idx_shift_tanggal ON shift_kasir(tanggal);
+CREATE INDEX idx_shift_status ON shift_kasir(status);
+CREATE INDEX idx_shift_user ON shift_kasir(user_id);
+
+-- -----------------------------------------------------------------------------
+-- 11. TABEL TRANSAKSI (Orders/Sales)
+-- Berdasarkan: 3riwayat_transaksi.html, buat_transaksi.html, keranjang.html, 
+--              metode_pembayaran.html, 1home.html, 4ringkasan.html
+-- -----------------------------------------------------------------------------
+CREATE TABLE transaksi (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    shift_id INT NULL COMMENT 'Referensi ke shift kasir',
+    user_id INT NOT NULL COMMENT 'Kasir yang memproses',
+    nomor_transaksi VARCHAR(50) NOT NULL UNIQUE COMMENT 'Format: TRX-XXXX, AIPOS-XXXX',
+    tanggal_transaksi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    subtotal DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    diskon_persen DECIMAL(5, 2) DEFAULT 0,
+    diskon_nominal DECIMAL(15, 2) DEFAULT 0,
+    pajak_persen DECIMAL(5, 2) DEFAULT 0 COMMENT 'Contoh: 11 untuk PPN 11%',
+    pajak_nominal DECIMAL(15, 2) DEFAULT 0,
+    biaya_tambahan DECIMAL(15, 2) DEFAULT 0 COMMENT 'Service charge, dll',
+    total DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    metode_pembayaran ENUM('tunai', 'qris', 'ewallet', 'debit_kredit', 'transfer') NOT NULL DEFAULT 'tunai',
+    qris_ref_number VARCHAR(100) NULL COMMENT 'Nomor referensi dari scan QRIS',
+    jumlah_bayar DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    kembalian DECIMAL(15, 2) DEFAULT 0,
+    status ENUM('pending', 'lunas', 'gagal', 'dibatalkan') DEFAULT 'pending',
+    catatan TEXT NULL,
+    nama_pelanggan VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE,
+    FOREIGN KEY (shift_id) REFERENCES shift_kasir(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index untuk pencarian transaksi
+CREATE INDEX idx_transaksi_nomor ON transaksi(nomor_transaksi);
+CREATE INDEX idx_transaksi_tanggal ON transaksi(tanggal_transaksi);
+CREATE INDEX idx_transaksi_status ON transaksi(status);
+CREATE INDEX idx_transaksi_shift ON transaksi(shift_id);
+
+-- -----------------------------------------------------------------------------
+-- 12. TABEL DETAIL TRANSAKSI (Order Items)
+-- Berdasarkan: keranjang.html (item-item dalam keranjang)
+-- -----------------------------------------------------------------------------
+CREATE TABLE detail_transaksi (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    transaksi_id INT NOT NULL,
+    produk_id INT NOT NULL,
+    variasi_id INT NULL,
+    nama_produk VARCHAR(255) NOT NULL COMMENT 'Snapshot nama produk saat transaksi',
+    nama_variasi VARCHAR(100) NULL COMMENT 'Snapshot nama variasi',
+    harga_satuan DECIMAL(15, 2) NOT NULL,
+    jumlah INT NOT NULL DEFAULT 1,
+    diskon_item DECIMAL(15, 2) DEFAULT 0,
+    subtotal DECIMAL(15, 2) NOT NULL,
+    catatan TEXT NULL COMMENT 'Contoh: Normal Sugar, Less Ice',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (transaksi_id) REFERENCES transaksi(id) ON DELETE CASCADE,
+    FOREIGN KEY (produk_id) REFERENCES produk(id) ON DELETE RESTRICT,
+    FOREIGN KEY (variasi_id) REFERENCES variasi_produk(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 13. TABEL DETAIL TRANSAKSI ITEM TAMBAHAN
+-- Untuk menyimpan add-ons yang dipilih pada setiap item pesanan
+-- -----------------------------------------------------------------------------
+CREATE TABLE detail_transaksi_item_tambahan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    detail_transaksi_id INT NOT NULL,
+    opsi_id INT NOT NULL,
+    nama_grup VARCHAR(100) NOT NULL COMMENT 'Snapshot nama grup',
+    nama_opsi VARCHAR(100) NOT NULL COMMENT 'Snapshot nama opsi',
+    harga DECIMAL(15, 2) NOT NULL,
+    jumlah INT DEFAULT 1,
+    FOREIGN KEY (detail_transaksi_id) REFERENCES detail_transaksi(id) ON DELETE CASCADE,
+    FOREIGN KEY (opsi_id) REFERENCES opsi_item_tambahan(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 14. TABEL QRIS/PAYMENT SCAN LOG
+-- Berdasarkan: kasir/2riwayat_transaksi_kasir.html (fitur QR Scanner)
+-- -----------------------------------------------------------------------------
+CREATE TABLE qris_scan_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    user_id INT NOT NULL,
+    transaksi_id INT NULL COMMENT 'Jika berhasil linked ke transaksi',
+    qr_data TEXT NOT NULL COMMENT 'Data dari QR yang discan',
+    scan_result ENUM('success', 'failed', 'invalid', 'expired') DEFAULT 'success',
+    error_message VARCHAR(255) NULL,
+    scanned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY (transaksi_id) REFERENCES transaksi(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 15. TABEL PENGATURAN TOKO
+-- Berdasarkan: pengaturan.html
+-- -----------------------------------------------------------------------------
+CREATE TABLE pengaturan_toko (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL UNIQUE,
+    pajak_aktif BOOLEAN DEFAULT FALSE,
+    pajak_persen DECIMAL(5, 2) DEFAULT 11.00 COMMENT 'PPN Default 11%',
+    struk_header TEXT NULL,
+    struk_footer TEXT NULL,
+    printer_nama VARCHAR(100) NULL,
+    printer_tipe VARCHAR(50) NULL,
+    auto_print_struk BOOLEAN DEFAULT FALSE,
+    show_logo_struk BOOLEAN DEFAULT TRUE,
+    currency_symbol VARCHAR(10) DEFAULT 'Rp',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 16. TABEL METODE PEMBAYARAN NON-TUNAI
+-- Berdasarkan: pengaturan.html (Pembayaran Non-Tunai)
+-- -----------------------------------------------------------------------------
+CREATE TABLE metode_pembayaran (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    jenis ENUM('qris', 'ewallet', 'debit_kredit', 'transfer') NOT NULL,
+    nama_provider VARCHAR(100) NOT NULL COMMENT 'Contoh: GoPay, OVO, BCA, dll',
+    nomor_rekening VARCHAR(50) NULL,
+    nama_pemilik VARCHAR(100) NULL,
+    qr_code_image VARCHAR(500) NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 17. TABEL NOTIFIKASI
+-- Berdasarkan: 1home.html (ikon notifikasi dengan badge)
+-- -----------------------------------------------------------------------------
+CREATE TABLE notifikasi (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    toko_id INT NULL,
+    judul VARCHAR(255) NOT NULL,
+    pesan TEXT NOT NULL,
+    jenis ENUM('info', 'warning', 'success', 'error', 'shift', 'stok') DEFAULT 'info',
+    is_read BOOLEAN DEFAULT FALSE,
+    link VARCHAR(255) NULL,
+    data JSON NULL COMMENT 'Data tambahan untuk notifikasi',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index notifikasi
+CREATE INDEX idx_notifikasi_user ON notifikasi(user_id);
+CREATE INDEX idx_notifikasi_read ON notifikasi(is_read);
+
+-- -----------------------------------------------------------------------------
+-- 18. TABEL BIAYA TRANSAKSI (Service Charges)
+-- Berdasarkan: pengaturan.html (Biaya Transaksi)
+-- -----------------------------------------------------------------------------
+CREATE TABLE biaya_transaksi (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    toko_id INT NOT NULL,
+    nama_biaya VARCHAR(100) NOT NULL COMMENT 'Contoh: Service Charge, Biaya Pengiriman',
+    tipe ENUM('persen', 'nominal') DEFAULT 'persen',
+    nilai DECIMAL(15, 2) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 19. TABEL LOG STOK (Stock History)
+-- Untuk tracking perubahan stok produk
+-- -----------------------------------------------------------------------------
+CREATE TABLE log_stok (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produk_id INT NOT NULL,
+    variasi_id INT NULL COMMENT 'Jika perubahan stok variasi',
+    tipe ENUM('masuk', 'keluar', 'adjustment', 'retur') NOT NULL,
+    jumlah INT NOT NULL,
+    stok_sebelum INT NOT NULL,
+    stok_sesudah INT NOT NULL,
+    keterangan TEXT NULL,
+    transaksi_id INT NULL COMMENT 'Referensi jika keluar karena penjualan',
+    user_id INT NOT NULL COMMENT 'Siapa yang melakukan perubahan',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (produk_id) REFERENCES produk(id) ON DELETE CASCADE,
+    FOREIGN KEY (variasi_id) REFERENCES variasi_produk(id) ON DELETE SET NULL,
+    FOREIGN KEY (transaksi_id) REFERENCES transaksi(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------------------------
+-- 20. TABEL AKTIVITAS LOG
+-- Untuk tracking aktivitas user di sistem
+-- -----------------------------------------------------------------------------
+CREATE TABLE aktivitas_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    toko_id INT NULL,
+    aksi VARCHAR(100) NOT NULL COMMENT 'login, logout, buka_shift, tutup_shift, buat_transaksi, dll',
+    deskripsi TEXT NULL,
+    ip_address VARCHAR(45) NULL,
+    user_agent VARCHAR(500) NULL,
+    data_lama JSON NULL COMMENT 'Data sebelum perubahan',
+    data_baru JSON NULL COMMENT 'Data setelah perubahan',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (toko_id) REFERENCES toko(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index aktivitas
+CREATE INDEX idx_aktivitas_user ON aktivitas_log(user_id);
+CREATE INDEX idx_aktivitas_aksi ON aktivitas_log(aksi);
+CREATE INDEX idx_aktivitas_tanggal ON aktivitas_log(created_at);
+
+-- =============================================================================
+-- VIEWS UNTUK LAPORAN / RINGKASAN
+-- Berdasarkan: 1home.html, 4ringkasan.html
+-- =============================================================================
+
+-- View: Ringkasan Penjualan Hari Ini per Toko
+CREATE VIEW v_ringkasan_harian AS
+SELECT 
+    t.toko_id,
+    DATE(t.tanggal_transaksi) AS tanggal,
+    COUNT(t.id) AS total_transaksi,
+    SUM(t.subtotal) AS penjualan_kotor,
+    SUM(t.diskon_nominal) AS total_diskon,
+    SUM(t.pajak_nominal) AS total_pajak,
+    SUM(t.total) AS penjualan_bersih,
+    SUM(dt.jumlah) AS total_item_terjual
+FROM transaksi t
+LEFT JOIN detail_transaksi dt ON t.id = dt.transaksi_id
+WHERE t.status = 'lunas'
+GROUP BY t.toko_id, DATE(t.tanggal_transaksi);
+
+-- View: Produk Terlaris
+CREATE VIEW v_produk_terlaris AS
+SELECT 
+    p.id AS produk_id,
+    p.toko_id,
+    p.nama_produk,
+    p.harga_jual,
+    SUM(dt.jumlah) AS total_terjual,
+    SUM(dt.subtotal) AS total_pendapatan
+FROM produk p
+JOIN detail_transaksi dt ON p.id = dt.produk_id
+JOIN transaksi t ON dt.transaksi_id = t.id
+WHERE t.status = 'lunas'
+GROUP BY p.id, p.toko_id, p.nama_produk, p.harga_jual
+ORDER BY total_terjual DESC;
+
+-- View: Ringkasan Metode Pembayaran
+CREATE VIEW v_ringkasan_pembayaran AS
+SELECT 
+    toko_id,
+    DATE(tanggal_transaksi) AS tanggal,
+    metode_pembayaran,
+    COUNT(id) AS jumlah_transaksi,
+    SUM(total) AS total_nilai
+FROM transaksi
+WHERE status = 'lunas'
+GROUP BY toko_id, DATE(tanggal_transaksi), metode_pembayaran;
+
+-- View: Ringkasan Shift
+CREATE VIEW v_ringkasan_shift AS
+SELECT 
+    s.id AS shift_id,
+    s.toko_id,
+    tk.nama_toko,
+    s.user_id,
+    u.nama_lengkap AS nama_kasir,
+    s.role,
+    s.tanggal,
+    s.waktu_mulai,
+    s.waktu_selesai,
+    TIMESTAMPDIFF(MINUTE, s.waktu_mulai, IFNULL(s.waktu_selesai, NOW())) AS durasi_menit,
+    s.saldo_awal,
+    s.saldo_akhir,
+    s.total_penjualan,
+    s.total_transaksi,
+    s.total_item_terjual,
+    s.status
+FROM shift_kasir s
+JOIN toko tk ON s.toko_id = tk.id
+JOIN users u ON s.user_id = u.id;
+
+-- View: Daftar Toko User dengan Role
+CREATE VIEW v_toko_user AS
+SELECT 
+    pt.user_id,
+    pt.toko_id,
+    tk.nama_toko,
+    tk.gambar_toko,
+    tk.status AS status_toko,
+    pt.role,
+    pt.is_shared,
+    pt.is_active,
+    CASE 
+        WHEN pt.role = 'owner' THEN 'Owner'
+        WHEN pt.role = 'admin' THEN 'Admin'
+        WHEN pt.role = 'kasir' AND pt.is_shared = TRUE THEN 'Kasir (Shared)'
+        ELSE 'Kasir'
+    END AS role_label
+FROM pengguna_toko pt
+JOIN toko tk ON pt.toko_id = tk.id
+WHERE pt.is_active = TRUE;
+
+-- =============================================================================
+-- STORED PROCEDURES
+-- =============================================================================
+
+-- Procedure: Buka Shift Baru
+DELIMITER //
+CREATE PROCEDURE sp_buka_shift(
+    IN p_toko_id INT,
+    IN p_user_id INT,
+    IN p_role VARCHAR(20),
+    IN p_saldo_awal DECIMAL(15,2)
+)
+BEGIN
+    -- Tutup shift aktif jika ada
+    UPDATE shift_kasir 
+    SET status = 'force_closed', 
+        waktu_selesai = NOW(),
+        closed_reason = 'Auto-closed karena buka shift baru'
+    WHERE toko_id = p_toko_id 
+      AND user_id = p_user_id 
+      AND status = 'aktif';
+    
+    -- Buat shift baru
+    INSERT INTO shift_kasir (toko_id, user_id, role, tanggal, saldo_awal, status)
+    VALUES (p_toko_id, p_user_id, p_role, CURDATE(), p_saldo_awal, 'aktif');
+    
+    SELECT LAST_INSERT_ID() AS shift_id;
+END //
+DELIMITER ;
+
+-- Procedure: Tutup Shift
+DELIMITER //
+CREATE PROCEDURE sp_tutup_shift(
+    IN p_shift_id INT,
+    IN p_catatan TEXT
+)
+BEGIN
+    DECLARE v_total_tunai DECIMAL(15,2);
+    DECLARE v_total_qris DECIMAL(15,2);
+    DECLARE v_total_lain DECIMAL(15,2);
+    DECLARE v_total_transaksi INT;
+    DECLARE v_total_item INT;
+    DECLARE v_saldo_awal DECIMAL(15,2);
+    
+    -- Hitung total per metode pembayaran
+    SELECT 
+        IFNULL(SUM(CASE WHEN metode_pembayaran = 'tunai' THEN total ELSE 0 END), 0),
+        IFNULL(SUM(CASE WHEN metode_pembayaran = 'qris' THEN total ELSE 0 END), 0),
+        IFNULL(SUM(CASE WHEN metode_pembayaran NOT IN ('tunai', 'qris') THEN total ELSE 0 END), 0),
+        COUNT(*),
+        IFNULL(SUM(dt.total_item), 0)
+    INTO v_total_tunai, v_total_qris, v_total_lain, v_total_transaksi, v_total_item
+    FROM transaksi t
+    LEFT JOIN (SELECT transaksi_id, SUM(jumlah) AS total_item FROM detail_transaksi GROUP BY transaksi_id) dt 
+        ON t.id = dt.transaksi_id
+    WHERE t.shift_id = p_shift_id AND t.status = 'lunas';
+    
+    -- Ambil saldo awal
+    SELECT saldo_awal INTO v_saldo_awal FROM shift_kasir WHERE id = p_shift_id;
+    
+    -- Update shift
+    UPDATE shift_kasir SET
+        waktu_selesai = NOW(),
+        saldo_akhir = v_saldo_awal + v_total_tunai,
+        total_penjualan_tunai = v_total_tunai,
+        total_penjualan_qris = v_total_qris,
+        total_penjualan_ewallet = v_total_lain,
+        total_penjualan = v_total_tunai + v_total_qris + v_total_lain,
+        total_transaksi = v_total_transaksi,
+        total_item_terjual = v_total_item,
+        catatan = p_catatan,
+        status = 'selesai',
+        closed_reason = 'Normal'
+    WHERE id = p_shift_id;
+    
+    SELECT 'Shift berhasil ditutup' AS message;
+END //
+DELIMITER ;
+
+-- Procedure: Update Urutan Variasi (untuk drag & drop sorting)
+DELIMITER //
+CREATE PROCEDURE sp_update_urutan_variasi(
+    IN p_produk_id INT,
+    IN p_variasi_ids JSON
+)
+BEGIN
+    DECLARE i INT DEFAULT 0;
+    DECLARE total_items INT;
+    DECLARE current_id INT;
+    
+    SET total_items = JSON_LENGTH(p_variasi_ids);
+    
+    WHILE i < total_items DO
+        SET current_id = JSON_EXTRACT(p_variasi_ids, CONCAT('$[', i, ']'));
+        UPDATE variasi_produk SET urutan = i WHERE id = current_id AND produk_id = p_produk_id;
+        SET i = i + 1;
+    END WHILE;
+    
+    SELECT 'Urutan berhasil diupdate' AS message;
+END //
+DELIMITER ;
+
+-- =============================================================================
+-- SAMPLE DATA (Opsional - untuk testing)
+-- =============================================================================
+
+-- Sample User (Owner)
+-- INSERT INTO users (email, password, nama_lengkap, nomor_telepon) VALUES
+-- ('budi.santoso@example.com', '$2y$10$...hashed_password...', 'Budi Santoso', '08123456789');
+
+-- Sample User (Kasir)
+-- INSERT INTO users (email, password, nama_lengkap, nomor_telepon) VALUES
+-- ('kasir01@example.com', '$2y$10$...hashed_password...', 'Dewi Kasir', '08987654321');
+
+-- Sample Toko
+-- INSERT INTO toko (owner_id, nama_toko, deskripsi, template_usaha, status, kode_invite) VALUES
+-- (1, 'Toko Sembako Jaya', 'Toko sembako lengkap', 'ritel', 'buka', 'TSJ123'),
+-- (1, 'Warung Kopi Kenangan', 'Warung kopi dan makanan ringan', 'fnb', 'buka', 'WKK456');
+
+-- Sample Pengguna Toko (Owner)
+-- INSERT INTO pengguna_toko (toko_id, user_id, role, is_shared) VALUES
+-- (1, 1, 'owner', FALSE),
+-- (2, 1, 'owner', FALSE);
+
+-- Sample Pengguna Toko (Shared Kasir)
+-- INSERT INTO pengguna_toko (toko_id, user_id, role, is_shared, invited_by, invited_at) VALUES
+-- (2, 2, 'kasir', TRUE, 1, NOW());
+
+-- Sample Kategori Produk
+-- INSERT INTO kategori_produk (toko_id, nama_kategori, urutan) VALUES
+-- (1, 'Coffee', 1),
+-- (1, 'Fresh', 2),
+-- (1, 'Literan', 3),
+-- (1, 'Milk', 4),
+-- (1, 'Signature', 5);
+
+-- Sample Grup Item Tambahan
+-- INSERT INTO grup_item_tambahan (toko_id, nama_grup, deskripsi, tipe, pilih_min, pilih_max) VALUES
+-- (1, 'Topping Es Krim', 'Extra topping untuk minuman', 'opsional', 0, 3),
+-- (1, 'Extra Shot', 'Tambahan espresso shot', 'wajib', 1, 2);
+
+-- =============================================================================
+-- STRUKTUR FOLDER FRONTEND
+-- =============================================================================
+-- 
+-- stitch_login/
+-- ├── index.html                   -- Login page
+-- ├── register.html                -- Register page (Nama, Email, Password, Terms)
+-- ├── lengkapi_profil.html         -- Complete profile (popup di daftar_toko)
+-- ├── daftar_toko.html             -- Store list (menampilkan toko owned & shared)
+-- ├── buat_toko.html               -- Create new store
+-- ├── 1home.html                   -- Owner/Admin dashboard
+-- ├── 2produk.html                 -- Product management (owner/admin only)
+-- ├── 3riwayat_transaksi.html      -- Transaction history
+-- ├── 4ringkasan.html              -- Summary/Reports
+-- ├── 5akun.html                   -- Account settings
+-- ├── edit_profil.html             -- Edit profile (Nama, Email readonly, Nomor HP)
+-- ├── buat_transaksi.html          -- Create transaction (owner)
+-- ├── keranjang.html               -- Cart
+-- ├── metode_pembayaran.html       -- Payment method selection
+-- ├── tambah_produk.html           -- Add/Edit product with variasi & item tambahan
+-- ├── tambah_variasi.html          -- Add/Edit variasi with harga & stok
+-- ├── kategori_produk.html         -- CRUD kategori dengan sorting
+-- ├── daftar_item_tambahan.html    -- CRUD item tambahan (grup + opsi)
+-- ├── pengaturan.html              -- Store settings
+-- ├── nav.js                       -- Navigation for owner (5 menu)
+-- │
+-- └── kasir/                       -- Kasir-specific pages
+--     ├── 1home_kasir.html         -- Kasir dashboard (simplified)
+--     ├── 2riwayat_transaksi_kasir.html -- Transaction history + QR Scanner
+--     ├── 3akun_kasir.html         -- Kasir account
+--     ├── edit_profil.html         -- Edit profile kasir
+--     ├── buat_transaksi_kasir.html -- Create transaction
+--     ├── keranjang_kasir.html     -- Cart
+--     ├── metode_pembayaran_kasir.html -- Payment
+--     ├── pengaturan.html          -- Kasir settings (limited)
+--     └── nav_kasir.js             -- Navigation for kasir (3 menu only)
+--
+-- =============================================================================
+-- PERBEDAAN ROLE
+-- =============================================================================
+-- 
+-- Owner dan Admin memiliki hak akses yang SAMA.
+-- Perbedaan hanya pada kepemilikan toko (owner_id di tabel toko).
+-- 
+-- | Fitur              | Owner/Admin | Kasir |
+-- |--------------------|-------------|-------|
+-- | Dashboard          | ✓           | ✓     |
+-- | Produk             | ✓           | ✗     |
+-- | Kategori Produk    | ✓           | ✗     |
+-- | Variasi Produk     | ✓           | ✗     |
+-- | Item Tambahan      | ✓           | ✗     |
+-- | Transaksi (Buat)   | ✓           | ✓     |
+-- | Riwayat Transaksi  | ✓           | ✓     |
+-- | Ringkasan/Laporan  | ✓           | ✗     |
+-- | Pengaturan Toko    | ✓           | ✗     |
+-- | Kelola Pengguna    | ✓           | ✗     |
+-- | Tutup Shift        | ✓           | ✓     |
+-- | QR Scanner         | ✓           | ✓     |
+-- 
+-- Catatan Role:
+-- - Owner: Pemilik toko (yang membuat toko). Tercatat di toko.owner_id
+-- - Admin: Pengguna dengan hak akses penuh seperti owner (is_shared=TRUE, role='admin')
+-- - Kasir: Pengguna dengan akses terbatas (is_shared=TRUE, role='kasir')
+-- 
+-- =============================================================================
+-- EXTERNAL LIBRARIES USED
+-- =============================================================================
+-- 
+-- | Library      | Version | Purpose                    | CDN                                      |
+-- |--------------|---------|----------------------------|------------------------------------------|
+-- | TailwindCSS  | 3.x     | CSS Framework              | cdn.tailwindcss.com                      |
+-- | SortableJS   | 1.15.0  | Drag & Drop sorting        | cdn.jsdelivr.net/npm/sortablejs@1.15.0   |
+-- | Material Icons | -     | Icons                      | fonts.googleapis.com/icon                |
+-- | Inter Font   | -       | Typography                 | fonts.googleapis.com/css2                |
+-- 
+-- =============================================================================
+-- NOTES / CATATAN TAMBAHAN
+-- =============================================================================
+-- 
+-- 1. Semua harga menggunakan DECIMAL(15,2) untuk akurasi mata uang
+-- 2. Timestamp menggunakan timezone server
+-- 3. Password harus di-hash sebelum disimpan (gunakan bcrypt)
+-- 4. Nomor transaksi di-generate dengan format: TRX-XXXX atau AIPOS-XXXX
+-- 5. Soft delete bisa diimplementasikan dengan menambahkan kolom deleted_at
+-- 6. Untuk multi-tenant/multi-cabang sudah didukung dengan relasi toko
+-- 7. Fitur "Shared Store" ditandai dengan is_shared=TRUE di pengguna_toko
+-- 8. Kasir yang di-share hanya bisa akses 3 menu: Home, Transaksi, Akun
+-- 9. Tutup Shift tidak logout user, hanya kembali ke daftar_toko.html
+-- 10. QR Scanner menggunakan navigator.mediaDevices.getUserMedia()
+-- 11. Variasi produk mendukung drag & drop sorting dengan SortableJS
+-- 12. Item Tambahan memiliki struktur Grup > Opsi dengan tipe wajib/opsional
+-- 13. Kategori produk dapat di-edit dan dihapus melalui kategori_produk.html
+-- 
+-- =============================================================================
+-- ALUR REGISTRASI & LENGKAPI PROFIL
+-- =============================================================================
+-- 
+-- 1. User mengisi form registrasi (register.html):
+--    - Nama Lengkap (wajib)
+--    - Email (wajib, validasi format)
+--    - Password (wajib, min 6 karakter)
+--    - Konfirmasi Password (wajib, harus cocok)
+--    - Checkbox Syarat & Ketentuan (wajib dicentang)
+-- 
+-- 2. Setelah submit, user redirect ke daftar_toko.html
+-- 
+-- 3. Di daftar_toko.html, popup "Lengkapi Profil" muncul otomatis:
+--    - Nama Lengkap (readonly, dari registrasi)
+--    - Email (readonly, dari registrasi)
+--    - Nomor WhatsApp/HP (wajib diisi)
+-- 
+-- 4. User bisa:
+--    - Simpan Data: profil_completed = TRUE
+--    - Nanti Saja: popup tidak muncul lagi (skip)
+-- 
+-- 5. Popup hanya muncul 1x setelah registrasi baru
+-- 
+-- =============================================================================
+-- STRUKTUR FOLDER FLUTTER (Implementasi)
+-- =============================================================================
+-- 
+-- Arsitektur: Feature-First + Clean Architecture (untuk fitur core)
+-- Pembagian Tim: Tech Lead, UI/UX Dev, DEV 1-8
+-- 
+-- aipos_pos/
+-- ├── lib/
+-- │   │
+-- │   ├── main.dart                         -- Entry point
+-- │   ├── app.dart                          -- MaterialApp configuration
+-- │   │
+-- │   ├── core/                             -- [TECH LEAD] Core utilities
+-- │   │   ├── config/
+-- │   │   │   ├── env.dart                  -- Environment variables
+-- │   │   │   └── app_config.dart           -- App configuration
+-- │   │   │
+-- │   │   ├── network/
+-- │   │   │   ├── api_client.dart           -- Dio HTTP client
+-- │   │   │   ├── api_exception.dart        -- Custom exceptions
+-- │   │   │   └── network_info.dart         -- Connectivity check
+-- │   │   │
+-- │   │   ├── storage/
+-- │   │   │   ├── secure_storage.dart       -- FlutterSecureStorage
+-- │   │   │   ├── shared_prefs.dart         -- SharedPreferences
+-- │   │   │   └── hive_db.dart              -- Offline cache
+-- │   │   │
+-- │   │   ├── router/
+-- │   │   │   ├── app_routes.dart           -- Route names
+-- │   │   │   └── app_router.dart           -- GoRouter setup
+-- │   │   │
+-- │   │   ├── theme/
+-- │   │   │   ├── app_theme.dart            -- Light & Dark theme
+-- │   │   │   └── text_styles.dart          -- Typography
+-- │   │   │
+-- │   │   ├── utils/
+-- │   │   │   ├── currency.dart             -- Currency formatter
+-- │   │   │   ├── datetime.dart             -- Date/time helpers
+-- │   │   │   ├── validators.dart           -- Form validators
+-- │   │   │   └── extensions.dart           -- Dart extensions
+-- │   │   │
+-- │   │   └── enums/
+-- │   │       ├── role_enum.dart            -- owner, admin, kasir
+-- │   │       ├── payment_enum.dart         -- tunai, qris, transfer, dll
+-- │   │       └── shift_status_enum.dart    -- buka, tutup
+-- │   │
+-- │   ├── shared/                           -- [UI/UX DEV] Reusable components
+-- │   │   ├── widgets/
+-- │   │   │   ├── buttons/                  -- AppButton, IconButton, etc
+-- │   │   │   ├── forms/                    -- AppTextField, AppDropdown, etc
+-- │   │   │   ├── dialogs/                  -- ConfirmDialog, AlertDialog
+-- │   │   │   ├── cards/                    -- ProductCard, TokoCard, etc
+-- │   │   │   └── loaders/                  -- Shimmer, CircularIndicator
+-- │   │   │
+-- │   │   └── layouts/
+-- │   │       ├── owner_layout.dart         -- 5-tab layout
+-- │   │       └── kasir_layout.dart         -- 3-tab layout
+-- │   │
+-- │   └── features/                         -- Feature modules
+-- │       │
+-- │       ├── auth/                         -- [DEV 1] Authentication
+-- │       │   ├── auth_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   ├── login_screen.dart
+-- │       │   │   ├── register_screen.dart
+-- │       │   │   └── splash_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── auth_service.dart
+-- │       │   └── data/
+-- │       │       ├── auth_repository.dart
+-- │       │       └── auth_api.dart
+-- │       │
+-- │       ├── user/                         -- [DEV 1] User & Profile
+-- │       │   ├── user_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   └── edit_profile_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── user_service.dart
+-- │       │   └── data/
+-- │       │       └── user_repository.dart
+-- │       │
+-- │       ├── toko/                         -- [DEV 2] Store Management
+-- │       │   ├── toko_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   ├── daftar_toko_screen.dart
+-- │       │   │   └── pengaturan_toko_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── toko_service.dart
+-- │       │   └── data/
+-- │       │       └── toko_repository.dart
+-- │       │
+-- │       ├── produk/                       -- [DEV 3] Product & Category
+-- │       │   ├── produk_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   ├── produk_screen.dart
+-- │       │   │   ├── tambah_produk_screen.dart
+-- │       │   │   └── kategori_produk_screen.dart
+-- │       │   ├── application/
+-- │       │   │   ├── produk_service.dart
+-- │       │   │   └── stok_policy.dart
+-- │       │   └── data/
+-- │       │       └── produk_repository.dart
+-- │       │
+-- │       ├── add_on/                       -- [DEV 3] Add-on Items
+-- │       │   ├── addon_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   └── addon_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── addon_service.dart
+-- │       │   └── data/
+-- │       │       └── addon_repository.dart
+-- │       │
+-- │       ├── transaksi/                    -- [DEV 4 & 5] Transaction (CORE)
+-- │       │   ├── transaksi_routes.dart
+-- │       │   ├── domain/                   -- Clean Architecture layer
+-- │       │   │   ├── entities/
+-- │       │   │   │   ├── transaksi.dart
+-- │       │   │   │   └── cart_item.dart
+-- │       │   │   ├── rules/
+-- │       │   │   │   ├── hitung_total.dart
+-- │       │   │   │   └── validasi_addon.dart
+-- │       │   │   └── policies/
+-- │       │   │       └── payment_policy.dart
+-- │       │   ├── presentation/
+-- │       │   │   ├── buat_transaksi_screen.dart
+-- │       │   │   ├── keranjang_screen.dart
+-- │       │   │   └── metode_pembayaran_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── transaksi_service.dart
+-- │       │   └── data/
+-- │       │       └── transaksi_repository.dart
+-- │       │
+-- │       ├── shift/                        -- [DEV 5] Shift Management
+-- │       │   ├── shift_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   ├── buka_shift_screen.dart
+-- │       │   │   └── tutup_shift_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── shift_service.dart
+-- │       │   └── data/
+-- │       │       └── shift_repository.dart
+-- │       │
+-- │       ├── report/                       -- [DEV 6] Reports & Summary
+-- │       │   ├── report_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   ├── ringkasan_screen.dart
+-- │       │   │   └── laporan_shift_screen.dart
+-- │       │   └── application/
+-- │       │       └── report_service.dart
+-- │       │
+-- │       ├── notifikasi/                   -- [DEV 7] Notifications
+-- │       │   ├── notifikasi_routes.dart
+-- │       │   ├── presentation/
+-- │       │   │   └── notifikasi_screen.dart
+-- │       │   ├── application/
+-- │       │   │   └── notifikasi_service.dart
+-- │       │   └── data/
+-- │       │       └── notifikasi_repository.dart
+-- │       │
+-- │       └── device/                       -- [DEV 8] Device Features
+-- │           ├── device_routes.dart
+-- │           ├── application/
+-- │           │   ├── camera_service.dart   -- QR Scanner
+-- │           │   └── printer_service.dart  -- Receipt printing
+-- │           └── data/
+-- │               └── device_repository.dart
+-- │
+-- ├── assets/
+-- │   ├── images/
+-- │   ├── icons/
+-- │   └── fonts/
+-- │
+-- ├── test/
+-- │   ├── unit/
+-- │   └── widget/
+-- │
+-- ├── pubspec.yaml
+-- └── README.md
+-- 
+-- =============================================================================
+-- PEMBAGIAN TIM FLUTTER
+-- =============================================================================
+-- 
+-- | Role         | Tanggung Jawab                               | Files               |
+-- |--------------|----------------------------------------------|---------------------|
+-- | Tech Lead    | Core utilities, config, network, router      | lib/core/           |
+-- | UI/UX Dev    | Shared widgets, layouts, components          | lib/shared/         |
+-- | DEV 1        | Auth, User, Profile                          | features/auth, user |
+-- | DEV 2        | Store management                             | features/toko       |
+-- | DEV 3        | Product, Category, Add-on                    | features/produk, addon |
+-- | DEV 4        | Transaction (core logic)                     | features/transaksi  |
+-- | DEV 5        | Transaction (payment), Shift                 | features/transaksi, shift |
+-- | DEV 6        | Reports, Summary                             | features/report     |
+-- | DEV 7        | Notifications                                | features/notifikasi |
+-- | DEV 8        | Device (Camera, Printer)                     | features/device     |
+-- 
+-- =============================================================================
+-- FLUTTER DEPENDENCIES (pubspec.yaml)
+-- =============================================================================
+-- 
+-- dependencies:
+--   flutter:
+--     sdk: flutter
+--   
+--   # State Management
+--   flutter_riverpod: ^2.4.9
+--   
+--   # Navigation
+--   go_router: ^13.0.0
+--   
+--   # Network
+--   dio: ^5.4.0
+--   
+--   # Local Storage
+--   shared_preferences: ^2.2.2
+--   flutter_secure_storage: ^9.0.0
+--   hive_flutter: ^1.1.0
+--   
+--   # UI Components
+--   flutter_svg: ^2.0.9
+--   cached_network_image: ^3.3.1
+--   shimmer: ^3.0.0
+--   flutter_slidable: ^3.0.1
+--   reorderable_grid_view: ^2.2.8     # Drag & drop sorting
+--   
+--   # Forms & Validation
+--   reactive_forms: ^16.1.1
+--   
+--   # Camera & QR
+--   mobile_scanner: ^4.0.0            # QR Scanner
+--   image_picker: ^1.0.7
+--   
+--   # Utils
+--   intl: ^0.18.1                     # Date & currency formatting
+--   logger: ^2.0.2
+--   
+--   # Icons
+--   material_symbols_icons: ^4.2719.3
+-- 
+-- =============================================================================
+
+
+

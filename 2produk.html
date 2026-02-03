@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AIPOS - Produk</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#1e40af",
+              "background-light": "#f8f6f6",
+              "background-dark": "#1a1a1a",
+              "card-light": "#ffffff",
+              "card-dark": "#2d2d2d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              xl: "12px",
+              "2xl": "16px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white"
+  >
+    <!-- Fixed Header -->
+    <div class="fixed top-0 left-0 right-0 z-50">
+      <!-- Top Navigation Bar -->
+      <header
+        class="bg-white dark:bg-card-dark border-b border-gray-200 dark:border-gray-700"
+      >
+        <div class="px-4 py-3 flex items-center justify-between">
+          <h1 class="text-lg font-bold text-gray-900 dark:text-white">
+            Produk
+            <span id="itemCount" class="text-gray-400 font-normal"
+              >(0 Item)</span
+            >
+          </h1>
+          <button
+            class="flex size-10 items-center justify-center rounded-xl bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 text-primary hover:bg-gray-100 transition-colors"
+          >
+            <span class="material-symbols-outlined text-[22px]">download</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Search Bar -->
+      <div
+        class="bg-background-light dark:bg-background-dark border-b border-gray-200/50 dark:border-gray-700/50"
+      >
+        <div class="px-4 py-3">
+          <div class="flex w-full items-center gap-2">
+            <!-- Search Input -->
+            <div class="relative flex-1">
+              <div
+                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+              >
+                <span
+                  class="material-symbols-outlined text-gray-400 text-[20px]"
+                  >search</span
+                >
+              </div>
+              <input
+                id="searchInput"
+                class="block w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 py-3 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary shadow-sm"
+                placeholder="Cari produk..."
+                type="text"
+              />
+            </div>
+            <!-- List View Button -->
+            <button
+              class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-primary hover:bg-gray-50 transition-colors"
+            >
+              <span class="material-symbols-outlined text-[22px]"
+                >format_list_bulleted</span
+              >
+            </button>
+            <!-- Filter Button -->
+            <button
+              class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-primary hover:bg-gray-50 transition-colors"
+            >
+              <span class="material-symbols-outlined text-[22px]"
+                >filter_alt</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="bg-background-light dark:bg-background-dark">
+        <div>
+          <div
+            id="categoryFilters"
+            class="flex gap-2 overflow-x-auto px-4 py-2 no-scrollbar"
+          >
+            <!-- Filters will be rendered by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer for fixed header -->
+    <div class="h-[180px]"></div>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-md mx-auto pb-40">
+      <!-- Product List -->
+      <div id="productList" class="px-4 py-2 space-y-3">
+        <!-- Products will be rendered by JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden px-4 py-12 text-center">
+        <span class="material-symbols-outlined text-gray-300 text-5xl mb-3"
+          >inventory_2</span
+        >
+        <p class="text-gray-500 text-sm">Tidak ada produk ditemukan</p>
+      </div>
+    </main>
+
+    <!-- Floating Action Button (Capsule) -->
+    <div class="fixed bottom-24 right-4 z-40">
+      <a
+        href="tambah_produk.html"
+        class="flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full shadow-xl shadow-primary/40 hover:bg-primary-dark active:scale-95 transition-all font-semibold text-sm"
+      >
+        <span class="material-symbols-outlined text-[20px]">add</span>
+        <span>Tambah Produk</span>
+      </a>
+    </div>
+
+    <!-- Bottom Navigation Container -->
+    <div id="bottomNav"></div>
+
+    <!-- Navigation Script -->
+    <script src="nav.js"></script>
+
+    <!-- Product Page Script -->
+    <script>
+      // Dummy products data
+      const products = [
+        {
+          id: 1,
+          name: "Kopi Susu Gula Aren",
+          price: 18000,
+          stock: 45,
+          category: "Coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuDqIKElypuyxDIWYU0QB582V551iaRzjgPYQCfWMHfGxvr2Lqb5dK1jqt3w-KacxBlUrXKwE4ZJKvHjZr_vVa1FJbNG0bzpboVkWcw8pRKoCxkCrR45FitohEutN-ZJnjkL0JF_uGW_YdrvOZR4cqsyG4RiScH60x47fSsmxHwza-ZS48FZkzXmRhTV8x6ZPgzs45Et6fYLyIEVYP2Qa__5WLcHAj-POtEstgtuP13rvpky6oJJrzo1umDlcbsOFxUVh_-zMz9S3a0",
+        },
+        {
+          id: 2,
+          name: "Green Tea Latte",
+          price: 20000,
+          stock: 12,
+          category: "Tea",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuAPDCP9Ikfs987hwdqhwA6iS_oWhlawse5U2S50FiWesm246lypEA7pna2V_o4B2jePj78kIg5_5UY687hdGNiMr2rwX0Dsc7iDBv1u0A09eVpb2-0tccwPWOK4VC8tPB0ZYLNxuxHDYuks25Zj5iW5s_NY2AJqsRUv86y3N3CxdnnRUmEj66Tu6nEW3KqvE_zujNfFfzhkZMHqprhAJ0NuZDi8gdzHMS9cr5RuZFutmcVWRi2PGHHoMXWSdw1E-R_zx-fbcAcWhB8",
+        },
+        {
+          id: 3,
+          name: "Americano",
+          price: 15000,
+          stock: 30,
+          category: "Coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuBaGcJ9y4yhzrMVHpOzbAbX8xEQvAUcwL2elnTIilFhHk6UAqquXx0EzMs4z4gduMfi0ttlntCDuw5sIQtR9oCt-uN2fOCZjOxspsgF1J8U9Ez96Yx_ngIpNRRZ4OhZrPI3t703jO3xV1XvEAY7zaVHjKIcJsl5MwKu2d7tqBsE2E4b_4p8DPpdpjq-tAwNZZrI_CcI1Ab_bHLCwVKP1IDR9oemuVpMDJwTS2jarLf_abrfPkeInuUoFvLrzjiZAIclW8NdiRJrNCA",
+        },
+        {
+          id: 4,
+          name: "Cappuccino",
+          price: 22000,
+          stock: 25,
+          category: "Coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuBfeBbtgUGukGROHCK3Hr5rC5KHv0iXLftEC-_5aTchlYDuxLZLnoPf9LEsCxJW58hKTqyFi7aZEL4QGp41K6CdYtqmBscbD-64baNAjEYKrFPdnxL3ZmFZVq8TA2-F0AS2ygHcKw7ksZ0CZicZJk5OhJ69B9T04MIDN1jJ3ANqCtWwKLoTVwt-Zy2P0xO0a1CTQHVxDrO7TTBFgHayC-hbNUYwrZW--BpcxoCfBpfFvFV2pBuZsnBywedJM4r50yAjJ1xTmWhWdeU",
+        },
+        {
+          id: 5,
+          name: "Matcha Frappe",
+          price: 25000,
+          stock: 8,
+          category: "Milk Based",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuAPDCP9Ikfs987hwdqhwA6iS_oWhlawse5U2S50FiWesm246lypEA7pna2V_o4B2jePj78kIg5_5UY687hdGNiMr2rwX0Dsc7iDBv1u0A09eVpb2-0tccwPWOK4VC8tPB0ZYLNxuxHDYuks25Zj5iW5s_NY2AJqsRUv86y3N3CxdnnRUmEj66Tu6nEW3KqvE_zujNfFfzhkZMHqprhAJ0NuZDi8gdzHMS9cr5RuZFutmcVWRi2PGHHoMXWSdw1E-R_zx-fbcAcWhB8",
+        },
+        {
+          id: 6,
+          name: "Red Velvet Cake",
+          price: 35000,
+          stock: 3,
+          category: "Lainnya",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuCzJhyE0ycV829SmA0c0lXXQKY1IiOD8Tm2EApIF7l0XXF2dc_-oIp7VNAPdnO3D3dcHcGT3PDdO9sqelRnC2whI6ymFcyne7wCJKcMU6EAsC31swoLhvGXJoiGe6TFL9tRCnXSSKinH-GHT-tarMFQJ-cs98UoCqBVjx6XIu1zg1IizBo6OZnpf_FIS20_HwJrxVpUCRmUlA0itX5NSR2JCxPpEqn5NlHC7JIJ0lgsfgsfyS2MUxCU-eaWNezez2i4JMY2rNFgsMs",
+        },
+        {
+          id: 7,
+          name: "Yakult Lemonade",
+          price: 15000,
+          stock: 85,
+          category: "Yakult Series",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuD9WB1QBHLuaotw6njJdyPME1cDYc8bv0L7hpgV57c0I90rgpoxU-_5TLVLgQnXMYGmszBmkuNFpfTeNC7Zq1gkYN1WA2Ppt-45tFGjUQ9icYSkNxyx2311SnSt1JjGipN4MC1A_nAdTr2h4KDo1-EmNIvTQLeOMldfWkZG5h9-XBBMmQR1br1H5D7PRpdddd2EVqaFw9mlSXIfoK1RLCEogViZVn2_mjIcWXaJLC5MstfBfii8Qkdt8WPJNhLe6yuNx6fOXb1nhos",
+        },
+        {
+          id: 8,
+          name: "Yakult Strawberry",
+          price: 17000,
+          stock: 40,
+          category: "Yakult Series",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuD9WB1QBHLuaotw6njJdyPME1cDYc8bv0L7hpgV57c0I90rgpoxU-_5TLVLgQnXMYGmszBmkuNFpfTeNC7Zq1gkYN1WA2Ppt-45tFGjUQ9icYSkNxyx2311SnSt1JjGipN4MC1A_nAdTr2h4KDo1-EmNIvTQLeOMldfWkZG5h9-XBBMmQR1br1H5D7PRpdddd2EVqaFw9mlSXIfoK1RLCEogViZVn2_mjIcWXaJLC5MstfBfii8Qkdt8WPJNhLe6yuNx6fOXb1nhos",
+        },
+        {
+          id: 9,
+          name: "Thai Tea",
+          price: 18000,
+          stock: 55,
+          category: "Tea",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuAPDCP9Ikfs987hwdqhwA6iS_oWhlawse5U2S50FiWesm246lypEA7pna2V_o4B2jePj78kIg5_5UY687hdGNiMr2rwX0Dsc7iDBv1u0A09eVpb2-0tccwPWOK4VC8tPB0ZYLNxuxHDYuks25Zj5iW5s_NY2AJqsRUv86y3N3CxdnnRUmEj66Tu6nEW3KqvE_zujNfFfzhkZMHqprhAJ0NuZDi8gdzHMS9cr5RuZFutmcVWRi2PGHHoMXWSdw1E-R_zx-fbcAcWhB8",
+        },
+        {
+          id: 10,
+          name: "Chocolate Milkshake",
+          price: 23000,
+          stock: 20,
+          category: "Milk Based",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuBfeBbtgUGukGROHCK3Hr5rC5KHv0iXLftEC-_5aTchlYDuxLZLnoPf9LEsCxJW58hKTqyFi7aZEL4QGp41K6CdYtqmBscbD-64baNAjEYKrFPdnxL3ZmFZVq8TA2-F0AS2ygHcKw7ksZ0CZicZJk5OhJ69B9T04MIDN1jJ3ANqCtWwKLoTVwt-Zy2P0xO0a1CTQHVxDrO7TTBFgHayC-hbNUYwrZW--BpcxoCfBpfFvFV2pBuZsnBywedJM4r50yAjJ1xTmWhWdeU",
+        },
+        {
+          id: 11,
+          name: "Jasa Kirim (Delivery)",
+          price: 10000,
+          stock: Infinity,
+          category: "Lainnya",
+          icon: "local_shipping",
+        },
+        {
+          id: 12,
+          name: "Espresso Shot",
+          price: 12000,
+          stock: 100,
+          category: "Coffee",
+          image:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuBaGcJ9y4yhzrMVHpOzbAbX8xEQvAUcwL2elnTIilFhHk6UAqquXx0EzMs4z4gduMfi0ttlntCDuw5sIQtR9oCt-uN2fOCZjOxspsgF1J8U9Ez96Yx_ngIpNRRZ4OhZrPI3t703jO3xV1XvEAY7zaVHjKIcJsl5MwKu2d7tqBsE2E4b_4p8DPpdpjq-tAwNZZrI_CcI1Ab_bHLCwVKP1IDR9oemuVpMDJwTS2jarLf_abrfPkeInuUoFvLrzjiZAIclW8NdiRJrNCA",
+        },
+      ];
+
+      // Categories
+      const categories = [
+        "Semua",
+        "Coffee",
+        "Tea",
+        "Milk Based",
+        "Yakult Series",
+        "Lainnya",
+      ];
+      let selectedCategory = "Semua";
+
+      // Format Rupiah
+      function formatRupiah(num) {
+        return "Rp " + num.toLocaleString("id-ID");
+      }
+
+      // Get stock badge color
+      function getStockBadge(stock) {
+        if (stock === Infinity) {
+          return {
+            color:
+              "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+            text: "Stok: ∞",
+          };
+        } else if (stock <= 5) {
+          return {
+            color:
+              "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+            text: `Stok: ${stock}`,
+          };
+        } else if (stock <= 15) {
+          return {
+            color:
+              "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400",
+            text: `Stok: ${stock}`,
+          };
+        } else {
+          return {
+            color:
+              "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
+            text: `Stok: ${stock}`,
+          };
+        }
+      }
+
+      // Render categories
+      function renderCategories() {
+        const container = document.getElementById("categoryFilters");
+        container.innerHTML = categories
+          .map((cat) => {
+            const isActive = selectedCategory === cat;
+            const activeClass = isActive
+              ? "bg-primary text-white shadow-sm shadow-primary/30"
+              : "bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50";
+            return `
+            <button onclick="selectCategory('${cat}')" class="flex h-9 shrink-0 items-center justify-center rounded-full px-4 transition-all active:scale-95 ${activeClass}">
+              <span class="text-sm font-medium">${cat}</span>
+            </button>
+          `;
+          })
+          .join("");
+      }
+
+      // Select category
+      function selectCategory(cat) {
+        selectedCategory = cat;
+        renderCategories();
+        renderProducts();
+      }
+
+      // Render products
+      function renderProducts() {
+        const container = document.getElementById("productList");
+        const emptyState = document.getElementById("emptyState");
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        let filtered = products;
+
+        // Filter by category
+        if (selectedCategory !== "Semua") {
+          filtered = filtered.filter((p) => p.category === selectedCategory);
+        }
+
+        // Filter by search
+        if (searchTerm) {
+          filtered = filtered.filter((p) =>
+            p.name.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        // Update count
+        document.getElementById(
+          "itemCount"
+        ).textContent = `(${filtered.length} Item)`;
+
+        if (filtered.length === 0) {
+          container.innerHTML = "";
+          emptyState.classList.remove("hidden");
+          return;
+        }
+
+        emptyState.classList.add("hidden");
+
+        container.innerHTML = filtered
+          .map((product) => {
+            const badge = getStockBadge(product.stock);
+            const imageHTML = product.image
+              ? `<img alt="${product.name}" class="h-full w-full object-cover" src="${product.image}" />`
+              : `<div class="w-full h-full flex items-center justify-center bg-gradient-to-tr from-gray-200/50 to-transparent">
+                <span class="material-symbols-outlined text-gray-400 text-3xl">${
+                  product.icon || "inventory_2"
+                }</span>
+              </div>`;
+
+            return `
+            <div class="group relative flex items-center justify-between gap-3 rounded-xl bg-white dark:bg-card-dark p-3 shadow-sm border border-gray-100 dark:border-gray-700/50 active:border-primary/20 transition-colors">
+              <div class="flex items-center gap-3 overflow-hidden">
+                <div class="relative shrink-0 size-16 overflow-hidden rounded-lg bg-gray-100 dark:bg-white/10">
+                  ${imageHTML}
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <p class="text-base font-semibold text-gray-900 dark:text-white truncate">${
+                    product.name
+                  }</p>
+                  <p class="text-primary font-bold text-sm">${formatRupiah(
+                    product.price
+                  )}</p>
+                  <div class="mt-1 flex items-center gap-1">
+                    <span class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium ${
+                      badge.color
+                    }">
+                      ${badge.text}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <button class="flex size-8 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10">
+                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+              </button>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      // Search handler
+      document.getElementById("searchInput").addEventListener("input", () => {
+        renderProducts();
+      });
+
+      // Initialize
+      renderCategories();
+      renderProducts();
+    </script>
+  </body>
+</html>
+

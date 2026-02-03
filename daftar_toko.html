@@ -1,0 +1,547 @@
+<!doctype html>
+
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Daftar Toko - AIPOS</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-hover": "#600000",
+              secondary: "#333333",
+              "background-light": "#F2F2F7" /* iOS grouped background style */,
+              "background-dark": "#000000",
+              "surface-light": "#FFFFFF",
+              "surface-dark": "#1C1C1E",
+              "text-primary": "#1d0c0c",
+              "text-secondary": "#6b7280",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              "2xl": "1.5rem",
+              full: "9999px",
+            },
+            boxShadow: {
+              card: "0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.02)",
+              float:
+                "0 10px 25px -5px rgba(128, 0, 0, 0.3), 0 8px 10px -6px rgba(128, 0, 0, 0.1)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* iOS-like input reset */
+      input[type="search"]::-webkit-search-decoration,
+      input[type="search"]::-webkit-search-cancel-button,
+      input[type="search"]::-webkit-search-results-button,
+      input[type="search"]::-webkit-search-results-decoration {
+        -webkit-appearance: none;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-secondary antialiased min-h-screen flex flex-col overflow-x-hidden selection:bg-primary/20 selection:text-primary"
+  >
+    <!-- Top App Bar -->
+    <header
+      class="sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50 transition-colors"
+    >
+      <div class="flex items-center justify-between px-4 py-3 w-full">
+        <h1
+          class="text-2xl font-bold tracking-tight text-secondary dark:text-white"
+        >
+          Daftar Toko
+        </h1>
+      </div>
+    </header>
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full px-4 pb-32 pt-2">
+      <!-- Search Bar -->
+      <div
+        class="mb-6 sticky top-[60px] z-40 py-2 bg-background-light dark:bg-background-dark transition-colors"
+      >
+        <div class="relative group">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <span
+              class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors"
+              >search</span
+            >
+          </div>
+          <input
+            class="block w-full pl-10 pr-3 py-2.5 border-none rounded-xl bg-gray-200/60 dark:bg-white/10 text-secondary dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white dark:focus:bg-surface-dark transition-all text-[15px] leading-relaxed shadow-sm"
+            placeholder="Cari nama toko..."
+            type="text"
+          />
+        </div>
+      </div>
+      <!-- Store List Section -->
+      <div class="flex flex-col gap-4">
+        <!-- Store Item 1 - OWNER -->
+        <a
+          href="1home.html"
+          class="group relative flex items-center bg-surface-light dark:bg-surface-dark p-4 rounded-xl shadow-card active:scale-[0.98] transition-all duration-200 cursor-pointer overflow-hidden border border-transparent hover:border-primary/10"
+        >
+          <!-- Image -->
+          <div
+            class="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100"
+          >
+            <img
+              alt="Interior of a modern grocery store with shelves stocked with goods"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKFljgoeEfoLWW-kYfj1WjMg4bG-ZH3o6MnVY3G1m2epwn1J9alTNRHK8I2MJRBgpg-oDSgj5r7xH4JcPzkrw7-bZ09NwZSRlFmXEWnoDkEhAPrmLkeJzczlvI7-r_v_gxWXZ0vu2mk17JpZ0fwv8t9VatlNlUWUd33d9o_N0MjXGuvD8pmkejSUPRN6_Gyb6nTSnFtFpSuaNE8Lt6pRfcfEb9R-myAi3eHAA67CtFZRIRyxxxECSdRPjVZmcAdpZ4zwZwOw5XxaU"
+            />
+          </div>
+          <!-- Content -->
+          <div class="ml-4 flex flex-1 flex-col justify-center min-w-0">
+            <div class="flex items-center justify-between">
+              <h3
+                class="font-semibold text-secondary dark:text-white truncate text-[16px]"
+              >
+                Toko Sembako Jaya
+              </h3>
+              <span
+                class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
+              >
+                Buka
+              </span>
+            </div>
+            <p class="mt-1 text-sm text-text-secondary truncate">
+              Jl. Merdeka No. 45, Jakarta Pusat
+            </p>
+            <div class="mt-1.5 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-primary"
+                >storefront</span
+              >
+              <span class="text-xs text-text-secondary">Cabang Utama</span>
+            </div>
+          </div>
+          <!-- Chevron -->
+          <div class="ml-2 shrink-0 text-gray-400 dark:text-gray-600">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </div>
+        </a>
+        <!-- Store Item 2 - SHARED (Kasir Role) -->
+        <a
+          href="kasir/1home.html"
+          class="group relative flex items-center bg-surface-light dark:bg-surface-dark p-4 rounded-xl shadow-card active:scale-[0.98] transition-all duration-200 cursor-pointer overflow-hidden border border-transparent hover:border-blue-400/30"
+        >
+          <div
+            class="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100"
+          >
+            <img
+              alt="A cozy coffee shop corner with wooden tables and warm lighting"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJaYeg-KK4a6dyaiteGHr6fmjKsFPE5khLEX9q9Akpfsu4tDcivF34g3X4md58nqhpiiOSFeFw6EQgTLH4C-xE83oS1qrCfMQaqEDwVFAlYp_8ZHM9I2RCHbQBSBlBrqP2EC17AKImNdQV77zviNGuJ5f4vmWIOlkMHSw-ZVcUAjbHDg-IEC-eZDZeYHdR6onv2OAePW0I6L2P1POqIeyw1QmmvtYWY1plcgLLEY70ASP2-iL76m2Jk38Cf6uzkU9LY0H7hnabuzU"
+            />
+          </div>
+          <div class="ml-4 flex flex-1 flex-col justify-center min-w-0">
+            <div class="flex items-center justify-between">
+              <h3
+                class="font-semibold text-secondary dark:text-white truncate text-[16px]"
+              >
+                Warung Kopi Kenangan
+              </h3>
+              <span
+                class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400"
+              >
+                Tutup
+              </span>
+            </div>
+            <p
+              class="mt-1 text-sm text-text-secondary truncate flex items-center gap-1.5"
+            >
+              <!-- Shared Icon -->
+              <span
+                class="inline-flex items-center justify-center w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/30"
+              >
+                <span
+                  class="material-symbols-outlined text-[14px] text-blue-500"
+                  >share</span
+                >
+              </span>
+              <span>Jl. Sudirman Kav 5, Jakarta Selatan</span>
+            </p>
+            <div class="mt-1.5 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-gray-400"
+                >coffee</span
+              >
+              <span class="text-xs text-text-secondary">F&amp;B</span>
+              <span class="mx-1 text-gray-300">•</span>
+              <span class="text-xs text-blue-500 font-medium">Kasir</span>
+            </div>
+          </div>
+          <div class="ml-2 shrink-0 text-gray-400 dark:text-gray-600">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </div>
+        </a>
+        <!-- Store Item 3 -->
+        <div
+          class="group relative flex items-center bg-surface-light dark:bg-surface-dark p-4 rounded-xl shadow-card active:scale-[0.98] transition-all duration-200 cursor-pointer overflow-hidden border border-transparent hover:border-primary/10"
+        >
+          <div
+            class="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center bg-primary/5 text-primary"
+          >
+            <span class="material-symbols-outlined text-[32px]">checkroom</span>
+          </div>
+          <div class="ml-4 flex flex-1 flex-col justify-center min-w-0">
+            <div class="flex items-center justify-between">
+              <h3
+                class="font-semibold text-secondary dark:text-white truncate text-[16px]"
+              >
+                RST Fashion Store
+              </h3>
+              <span
+                class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
+              >
+                Buka
+              </span>
+            </div>
+            <p class="mt-1 text-sm text-text-secondary truncate">
+              Pasar Tanah Abang Blok A
+            </p>
+            <div class="mt-1.5 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-gray-400"
+                >apparel</span
+              >
+              <span class="text-xs text-text-secondary">Retail</span>
+            </div>
+          </div>
+          <div class="ml-2 shrink-0 text-gray-400 dark:text-gray-600">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </div>
+        </div>
+      </div>
+      <!-- Demonstration of Empty State (Usually hidden, shown here for visual completeness below list) -->
+      <div
+        class="mt-12 pt-8 border-t-2 border-dashed border-gray-300 dark:border-gray-700 opacity-50 hover:opacity-100 transition-opacity"
+      >
+        <p
+          class="text-xs text-center text-gray-400 uppercase tracking-widest mb-4"
+        >
+          Design State: Empty List
+        </p>
+        <!-- Actual Empty State Component -->
+        <div class="flex flex-col items-center justify-center py-10 px-4">
+          <div
+            class="relative w-32 h-32 mb-6 rounded-full bg-primary/5 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-[48px] text-primary/40"
+              >storefront</span
+            >
+            <div
+              class="absolute bottom-0 right-0 p-2 bg-white dark:bg-surface-dark rounded-full shadow-lg"
+            >
+              <span class="material-symbols-outlined text-[20px] text-primary"
+                >add</span
+              >
+            </div>
+          </div>
+          <h3
+            class="text-lg font-bold text-secondary dark:text-white text-center mb-2"
+          >
+            Belum ada toko
+          </h3>
+          <p
+            class="text-text-secondary text-sm text-center max-w-[260px] leading-relaxed"
+          >
+            Mulai kelola bisnis Anda dengan menambahkan toko pertama Anda di RST
+            POS.
+          </p>
+        </div>
+      </div>
+    </main>
+    <!-- Floating Action Button Area -->
+    <!-- Using a gradient overlay to ensure content behind it fades nicely -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 w-full pointer-events-none">
+      <div class="w-full relative">
+        <!-- Gradient fade -->
+        <div
+          class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light/90 dark:via-background-dark/90 to-transparent pointer-events-none"
+        ></div>
+        <!-- Button Container -->
+        <div
+          class="absolute bottom-0 inset-x-0 p-4 pb-6 pointer-events-auto flex justify-center"
+        >
+          <a
+            href="buat_toko.html"
+            class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold text-[15px] h-14 rounded-2xl shadow-float transition-all active:scale-[0.98] active:shadow-none"
+          >
+            <span class="material-symbols-outlined">add_business</span>
+            <span>Tambah Toko Baru</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Lengkapi Profil (Muncul 1x setelah registrasi) -->
+    <div id="modalLengkapiProfil" class="fixed inset-0 z-[100] hidden">
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+
+      <!-- Modal Card -->
+      <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div
+          class="w-full max-w-[340px] bg-white dark:bg-[#1a1a1a] rounded-xl shadow-2xl flex flex-col relative overflow-hidden animate-in fade-in zoom-in-95 duration-300"
+        >
+          <!-- Decorative Header Accent -->
+          <div class="absolute top-0 left-0 w-full h-1.5 bg-primary"></div>
+
+          <!-- Content Wrapper -->
+          <div class="px-6 pt-7 pb-6 flex flex-col h-full">
+            <!-- Icon & Title -->
+            <div class="flex flex-col items-center text-center mb-6">
+              <div
+                class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary"
+              >
+                <span class="material-symbols-outlined text-[28px]">badge</span>
+              </div>
+              <h3
+                class="text-gray-800 dark:text-white tracking-tight text-xl font-bold leading-tight"
+              >
+                Lengkapi Profil
+              </h3>
+              <p
+                class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-relaxed mt-2 px-2"
+              >
+                Mohon lengkapi data diri Anda untuk melanjutkan menggunakan
+                aplikasi.
+              </p>
+            </div>
+
+            <!-- Form Fields -->
+            <form id="formLengkapiProfil" class="flex flex-col gap-4 mb-6">
+              <!-- Read-Only Field: Name -->
+              <div class="flex flex-col gap-1.5 opacity-80">
+                <label
+                  class="text-gray-700 dark:text-gray-300 text-xs font-semibold uppercase tracking-wide"
+                  >Nama Lengkap</label
+                >
+                <div class="relative group">
+                  <input
+                    id="inputNama"
+                    class="w-full rounded-lg bg-gray-100 dark:bg-gray-800 border-none text-gray-500 dark:text-gray-400 text-sm font-medium h-12 pl-11 pr-4 cursor-not-allowed select-none focus:ring-0"
+                    disabled
+                    type="text"
+                    value="Budi Santoso"
+                  />
+                  <span
+                    class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]"
+                    >lock</span
+                  >
+                </div>
+              </div>
+
+              <!-- Read-Only Field: Email -->
+              <div class="flex flex-col gap-1.5 opacity-80">
+                <label
+                  class="text-gray-700 dark:text-gray-300 text-xs font-semibold uppercase tracking-wide"
+                  >Email</label
+                >
+                <div class="relative group">
+                  <input
+                    id="inputEmail"
+                    class="w-full rounded-lg bg-gray-100 dark:bg-gray-800 border-none text-gray-500 dark:text-gray-400 text-sm font-medium h-12 pl-11 pr-4 cursor-not-allowed select-none focus:ring-0"
+                    disabled
+                    type="email"
+                    value="budi.santoso@example.com"
+                  />
+                  <span
+                    class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]"
+                    >lock</span
+                  >
+                </div>
+              </div>
+
+              <!-- Active Input Field: Phone -->
+              <div class="flex flex-col gap-1.5 mt-1">
+                <label
+                  class="text-gray-700 dark:text-gray-200 text-xs font-semibold uppercase tracking-wide"
+                  >Nomor WhatsApp / HP</label
+                >
+                <div class="relative group">
+                  <input
+                    id="inputPhone"
+                    autofocus
+                    class="w-full rounded-lg bg-white dark:bg-transparent border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white text-base font-normal h-12 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-gray-400 transition-all shadow-sm"
+                    placeholder="0812..."
+                    type="tel"
+                    required
+                  />
+                  <span
+                    class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors text-[20px]"
+                    >smartphone</span
+                  >
+                </div>
+                <p class="text-[11px] text-gray-500 dark:text-gray-500 mt-0.5">
+                  Wajib diisi untuk verifikasi akun.
+                </p>
+              </div>
+            </form>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 mt-auto">
+              <button
+                type="button"
+                onclick="skipLengkapiProfil()"
+                class="flex-1 h-11 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent text-gray-700 dark:text-gray-300 text-sm font-bold tracking-[0.015em] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                Nanti Saja
+              </button>
+              <button
+                type="button"
+                onclick="simpanProfil()"
+                class="flex-1 h-11 flex items-center justify-center rounded-lg bg-primary text-white text-sm font-bold tracking-[0.015em] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
+              >
+                Simpan Data
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Check if profile needs to be completed (runs once after registration)
+      function checkProfilStatus() {
+        const profilCompleted = localStorage.getItem("aipos_profil_completed");
+        const isNewUser = localStorage.getItem("aipos_new_registration");
+
+        // Show modal only if:
+        // 1. User just registered (flag exists)
+        // 2. Profile not yet completed
+        if (isNewUser === "true" && profilCompleted !== "true") {
+          populateUserData();
+          showModalLengkapiProfil();
+        }
+      }
+
+      function populateUserData() {
+        // Get user data from localStorage (set during registration)
+        const userName = localStorage.getItem("aipos_user_name") || "User";
+        const userEmail =
+          localStorage.getItem("aipos_user_email") || "user@example.com";
+
+        // Populate the modal fields
+        document.getElementById("inputNama").value = userName;
+        document.getElementById("inputEmail").value = userEmail;
+      }
+
+      function showModalLengkapiProfil() {
+        document
+          .getElementById("modalLengkapiProfil")
+          .classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+
+        // Focus on phone input
+        setTimeout(() => {
+          document.getElementById("inputPhone").focus();
+        }, 100);
+      }
+
+      function hideModalLengkapiProfil() {
+        document.getElementById("modalLengkapiProfil").classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+
+      function simpanProfil() {
+        const phone = document.getElementById("inputPhone").value.trim();
+
+        if (!phone) {
+          alert("Mohon masukkan nomor WhatsApp/HP Anda");
+          document.getElementById("inputPhone").focus();
+          return;
+        }
+
+        // Validate phone format (simple validation)
+        if (!/^[0-9]{10,15}$/.test(phone.replace(/[^0-9]/g, ""))) {
+          alert("Format nomor telepon tidak valid");
+          document.getElementById("inputPhone").focus();
+          return;
+        }
+
+        // Save to localStorage (in real app, this would be API call)
+        localStorage.setItem("aipos_profil_completed", "true");
+        localStorage.setItem("aipos_user_phone", phone);
+
+        // Remove new registration flag
+        localStorage.removeItem("aipos_new_registration");
+
+        alert("Profil berhasil disimpan!");
+        hideModalLengkapiProfil();
+      }
+
+      function skipLengkapiProfil() {
+        // User chose to skip, but we'll ask again next time
+        // Only remove the new registration flag after they complete it
+        if (
+          confirm(
+            "Anda yakin ingin melewati langkah ini? Anda bisa melengkapi profil nanti di menu Akun.",
+          )
+        ) {
+          // Mark as skipped but not completed - won't show again this session
+          localStorage.setItem("aipos_profil_completed", "true");
+          localStorage.removeItem("aipos_new_registration");
+          hideModalLengkapiProfil();
+        }
+      }
+
+      // Run on page load
+      document.addEventListener("DOMContentLoaded", checkProfilStatus);
+
+      // For testing: Uncomment line below to simulate new registration
+      // localStorage.setItem('aipos_new_registration', 'true'); localStorage.removeItem('aipos_profil_completed'); localStorage.setItem('aipos_user_name', 'Budi Santoso'); localStorage.setItem('aipos_user_email', 'budi@example.com');
+    </script>
+  </body>
+</html>
+
+

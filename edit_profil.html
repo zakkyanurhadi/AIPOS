@@ -1,0 +1,248 @@
+<!doctype html>
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Edit Profil - AIPOS</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-hover": "#600000",
+              secondary: "#333333",
+              "background-light": "#F5F5F5",
+              "background-dark": "#1a1a1a",
+              "surface-light": "#FFFFFF",
+              "surface-dark": "#2d2d2d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-secondary antialiased min-h-screen flex flex-col"
+  >
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-50 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between px-4 py-3">
+        <a
+          href="5akun.html"
+          class="flex items-center text-secondary dark:text-white"
+        >
+          <span class="material-symbols-outlined text-[24px]"
+            >chevron_left</span
+          >
+        </a>
+        <h1
+          class="text-lg font-semibold text-secondary dark:text-white absolute left-1/2 -translate-x-1/2"
+        >
+          Akun
+        </h1>
+        <div class="w-6"></div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 py-6 pb-32">
+      <!-- Upload Photo Section -->
+      <div class="flex flex-col items-center mb-8">
+        <div
+          class="w-28 h-28 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-4 border-white dark:border-gray-700 shadow-md mb-3"
+        >
+          <span class="material-symbols-outlined text-[48px] text-gray-400"
+            >receipt_long</span
+          >
+        </div>
+        <button
+          type="button"
+          class="text-primary font-semibold text-base hover:underline"
+          onclick="document.getElementById('photoInput').click()"
+        >
+          Upload
+        </button>
+        <input type="file" id="photoInput" accept="image/*" class="hidden" />
+      </div>
+
+      <!-- Form -->
+      <form id="editProfilForm" class="flex flex-col gap-5">
+        <!-- Nama -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-secondary dark:text-gray-300 text-sm font-medium">
+            Nama <span class="text-blue-500">*</span>
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            >
+              <span class="material-symbols-outlined text-[22px]">person</span>
+            </div>
+            <input
+              type="text"
+              id="nama"
+              value="Budi Santoso"
+              class="w-full rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark h-14 pl-12 pr-4 text-base text-secondary dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Email (Readonly) -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-secondary dark:text-gray-300 text-sm font-medium">
+            Email
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            >
+              <span class="material-symbols-outlined text-[22px]">mail</span>
+            </div>
+            <input
+              type="email"
+              id="email"
+              value="budi.santoso@example.com"
+              disabled
+              class="w-full rounded-full border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 h-14 pl-12 pr-4 text-base text-gray-500 dark:text-gray-400 cursor-not-allowed"
+            />
+          </div>
+        </div>
+
+        <!-- Nomor HP -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-secondary dark:text-gray-300 text-sm font-medium">
+            Nomor HP <span class="text-blue-500">*</span>
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            >
+              <span class="material-symbols-outlined text-[22px]">call</span>
+            </div>
+            <input
+              type="tel"
+              id="nomor_hp"
+              value="085664879842"
+              class="w-full rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark h-14 pl-12 pr-4 text-base text-secondary dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              required
+            />
+          </div>
+        </div>
+      </form>
+    </main>
+
+    <!-- Fixed Bottom Button -->
+    <div
+      class="fixed bottom-0 left-0 right-0 bg-white dark:bg-surface-dark border-t border-gray-200 dark:border-gray-700 p-4"
+    >
+      <button
+        type="submit"
+        form="editProfilForm"
+        class="w-full bg-primary hover:bg-primary-hover text-white font-bold h-14 rounded-full shadow-lg transition-all active:scale-[0.98] flex items-center justify-center"
+      >
+        Simpan
+      </button>
+    </div>
+
+    <script>
+      // Handle photo upload preview
+      document
+        .getElementById("photoInput")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const photoContainer = document.querySelector(".w-28.h-28");
+              photoContainer.style.backgroundImage = `url(${e.target.result})`;
+              photoContainer.style.backgroundSize = "cover";
+              photoContainer.style.backgroundPosition = "center";
+              photoContainer.querySelector("span").style.display = "none";
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+      // Handle form submission
+      document
+        .getElementById("editProfilForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const nama = document.getElementById("nama").value.trim();
+          const nomorHp = document.getElementById("nomor_hp").value.trim();
+
+          if (!nama) {
+            alert("Nama wajib diisi");
+            document.getElementById("nama").focus();
+            return;
+          }
+
+          if (!nomorHp) {
+            alert("Nomor HP wajib diisi");
+            document.getElementById("nomor_hp").focus();
+            return;
+          }
+
+          // Validate phone format
+          if (!/^[0-9]{10,15}$/.test(nomorHp.replace(/[^0-9]/g, ""))) {
+            alert("Format nomor HP tidak valid");
+            document.getElementById("nomor_hp").focus();
+            return;
+          }
+
+          // Save to localStorage (in real app, this would be API call)
+          localStorage.setItem("aipos_user_name", nama);
+          localStorage.setItem("aipos_user_phone", nomorHp);
+
+          alert("Profil berhasil disimpan!");
+          window.location.href = "5akun.html";
+        });
+
+      // Load user data from localStorage on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        const savedName = localStorage.getItem("aipos_user_name");
+        const savedEmail = localStorage.getItem("aipos_user_email");
+        const savedPhone = localStorage.getItem("aipos_user_phone");
+
+        if (savedName) document.getElementById("nama").value = savedName;
+        if (savedEmail) document.getElementById("email").value = savedEmail;
+        if (savedPhone) document.getElementById("nomor_hp").value = savedPhone;
+      });
+    </script>
+  </body>
+</html>
+
+

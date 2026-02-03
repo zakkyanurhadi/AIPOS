@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AIPOS - Pembayaran</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              "primary-dark": "#1e40af",
+              secondary: "#333333",
+              "background-light": "#f8f6f6",
+              "background-dark": "#1a1a1a",
+              "card-light": "#ffffff",
+              "card-dark": "#2d2d2d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              xl: "12px",
+              "2xl": "16px",
+              "3xl": "24px",
+            },
+            boxShadow: {
+              soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+              card: "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      @keyframes pulse-border {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(128, 0, 0, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 4px rgba(128, 0, 0, 0.1);
+        }
+      }
+      .selected-method {
+        animation: pulse-border 2s infinite;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-100 flex flex-col relative overflow-x-hidden antialiased"
+  >
+    <!-- Fixed Header -->
+    <div class="fixed top-0 left-0 right-0 z-50">
+      <header
+        class="bg-white dark:bg-card-dark h-14 border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm"
+      >
+        <div class="px-4 h-full flex items-center justify-between relative">
+          <!-- Tombol Kembali (Kiri) -->
+          <a
+            href="keranjang.html"
+            class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white transition-colors z-10"
+          >
+            <span class="material-symbols-outlined">arrow_back</span>
+          </a>
+
+          <!-- Judul (Tengah Absolut) -->
+          <h1
+            class="absolute left-1/2 -translate-x-1/2 text-base font-bold text-gray-900 dark:text-white tracking-tight"
+          >
+            Pembayaran
+          </h1>
+
+          <!-- Placeholder untuk keseimbangan (Kanan) -->
+          <div class="w-10 h-10"></div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Spacer untuk fixed header -->
+    <div class="h-14"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full pb-96">
+      <!-- Total Card -->
+      <div class="px-4 mt-6">
+        <div
+          class="bg-gradient-to-br from-primary to-primary-dark text-white rounded-2xl p-8 shadow-lg shadow-primary/30 text-center relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl"
+          ></div>
+          <div
+            class="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -ml-10 -mb-10 blur-xl"
+          ></div>
+          <p class="text-white/80 text-sm font-medium mb-2 relative z-10">
+            Total Tagihan
+          </p>
+          <h2
+            id="totalBillDisplay"
+            class="text-4xl font-bold tracking-tight relative z-10"
+          >
+            Rp 97.680
+          </h2>
+          <div
+            class="mt-4 inline-flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full text-xs font-medium text-white/90 relative z-10"
+          >
+            <span class="material-symbols-outlined text-[14px]"
+              >receipt_long</span
+            >
+            <span id="orderNumber">Order #AIPOS-8821</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="px-4 mt-6 space-y-4">
+        <h3
+          class="font-bold text-gray-900 dark:text-white px-1 flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-primary">payments</span>
+          Metode Pembayaran
+        </h3>
+
+        <!-- Tunai Section -->
+        <div
+          id="tunaiSection"
+          class="bg-white dark:bg-card-dark rounded-2xl p-5 shadow-card border-2 border-primary relative overflow-hidden transition-all duration-300 selected-method"
+        >
+          <div
+            class="flex items-center justify-between mb-4 cursor-pointer"
+            onclick="selectMethod('tunai')"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"
+              >
+                <span class="material-symbols-outlined">attach_money</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-900 dark:text-white"
+                  >Tunai</span
+                >
+                <span class="text-xs text-gray-500"
+                  >Uang tunai & kembalian</span
+                >
+              </div>
+            </div>
+            <div
+              id="tunaiCheck"
+              class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm shadow-primary/30"
+            >
+              <span class="material-symbols-outlined text-sm font-bold"
+                >check</span
+              >
+            </div>
+          </div>
+
+          <!-- Tunai Detail -->
+          <div id="tunaiDetail" class="space-y-4">
+            <div class="space-y-1">
+              <label
+                class="text-xs font-semibold text-gray-500 uppercase tracking-wide ml-1"
+                >Uang Diterima</label
+              >
+              <div class="relative group">
+                <span
+                  class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-lg group-focus-within:text-primary transition-colors"
+                  >Rp</span
+                >
+                <input
+                  id="cashInput"
+                  class="block w-full pl-12 pr-12 py-3.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xl font-bold text-gray-900 dark:text-white outline-none transition-all placeholder-gray-300 shadow-sm"
+                  placeholder="0"
+                  type="text"
+                  inputmode="numeric"
+                />
+                <button
+                  onclick="clearCashInput()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                >
+                  <span class="material-symbols-outlined text-[20px]"
+                    >close</span
+                  >
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Amount Buttons -->
+            <div id="quickAmounts" class="grid grid-cols-3 gap-2">
+              <!-- Buttons will be rendered by JavaScript -->
+            </div>
+
+            <!-- Change Display -->
+            <div
+              class="flex justify-between items-center pt-4 border-t border-dashed border-gray-200 dark:border-gray-700"
+            >
+              <span class="text-sm font-medium text-gray-500">Kembalian</span>
+              <div
+                id="changeDisplay"
+                class="flex items-center gap-1 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-1 rounded-lg"
+              >
+                <span class="material-symbols-outlined text-[18px]"
+                  >savings</span
+                >
+                <span class="font-bold">Rp 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Non-Tunai Label -->
+        <p
+          class="text-xs font-semibold text-gray-400 uppercase tracking-wide px-1 pt-2"
+        >
+          Non-Tunai
+        </p>
+
+        <!-- Non-Tunai Options -->
+        <div class="grid grid-cols-2 gap-3 pb-6">
+          <button
+            onclick="selectMethod('qris')"
+            id="qrisBtn"
+            class="payment-btn bg-white dark:bg-card-dark p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-card flex flex-col items-center justify-center gap-3 hover:border-primary hover:shadow-md hover:bg-primary/5 dark:hover:bg-white/5 transition-all group relative overflow-hidden"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-700 group-hover:bg-white dark:group-hover:bg-gray-600 flex items-center justify-center transition-colors"
+            >
+              <span
+                class="material-symbols-outlined text-[28px] text-gray-400 group-hover:text-primary transition-colors"
+                >qr_code_scanner</span
+              >
+            </div>
+            <span
+              class="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary"
+              >QRIS</span
+            >
+          </button>
+          <button
+            onclick="selectMethod('ewallet')"
+            id="ewalletBtn"
+            class="payment-btn bg-white dark:bg-card-dark p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-card flex flex-col items-center justify-center gap-3 hover:border-primary hover:shadow-md hover:bg-primary/5 dark:hover:bg-white/5 transition-all group relative overflow-hidden"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-700 group-hover:bg-white dark:group-hover:bg-gray-600 flex items-center justify-center transition-colors"
+            >
+              <span
+                class="material-symbols-outlined text-[28px] text-gray-400 group-hover:text-primary transition-colors"
+                >account_balance_wallet</span
+              >
+            </div>
+            <span
+              class="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary"
+              >E-Wallet</span
+            >
+          </button>
+          <button
+            onclick="selectMethod('card')"
+            id="cardBtn"
+            class="payment-btn bg-white dark:bg-card-dark p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-card flex flex-col items-center justify-center gap-3 hover:border-primary hover:shadow-md hover:bg-primary/5 dark:hover:bg-white/5 transition-all group relative overflow-hidden"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-700 group-hover:bg-white dark:group-hover:bg-gray-600 flex items-center justify-center transition-colors"
+            >
+              <span
+                class="material-symbols-outlined text-[28px] text-gray-400 group-hover:text-primary transition-colors"
+                >credit_card</span
+              >
+            </div>
+            <span
+              class="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary"
+              >Debit / Kredit</span
+            >
+          </button>
+          <button
+            onclick="selectMethod('transfer')"
+            id="transferBtn"
+            class="payment-btn bg-white dark:bg-card-dark p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-card flex flex-col items-center justify-center gap-3 hover:border-primary hover:shadow-md hover:bg-primary/5 dark:hover:bg-white/5 transition-all group relative overflow-hidden"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-700 group-hover:bg-white dark:group-hover:bg-gray-600 flex items-center justify-center transition-colors"
+            >
+              <span
+                class="material-symbols-outlined text-[28px] text-gray-400 group-hover:text-primary transition-colors"
+                >account_balance</span
+              >
+            </div>
+            <span
+              class="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary"
+              >Transfer</span
+            >
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Fixed Bottom Summary -->
+    <div
+      class="fixed bottom-0 left-0 w-full bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-700 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] z-50 rounded-t-3xl"
+    >
+      <div class="px-5 pt-4 pb-8">
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between text-sm text-gray-500">
+            <span>Tagihan</span>
+            <span id="billAmount">Rp 97.680</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-500">
+            <span id="paidMethodLabel">Dibayar (Tunai)</span>
+            <span
+              id="paidAmount"
+              class="font-medium text-gray-900 dark:text-white"
+              >Rp 0</span
+            >
+          </div>
+          <div
+            class="flex justify-between items-center pt-3 mt-1 border-t border-dashed border-gray-200 dark:border-gray-700"
+          >
+            <span class="text-base font-bold text-gray-900 dark:text-white"
+              >Kembalian</span
+            >
+            <span
+              id="bottomChangeDisplay"
+              class="text-xl font-bold text-green-600 dark:text-green-400"
+              >Rp 0</span
+            >
+          </div>
+        </div>
+        <button
+          id="processBtn"
+          onclick="processPayment()"
+          class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/30 active:scale-[0.98] transition-all flex items-center justify-between px-6 group disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled
+        >
+          <span class="text-white/90 font-medium">Selesaikan</span>
+          <span class="flex items-center gap-2">
+            Proses Pembayaran
+            <span
+              class="material-symbols-outlined group-hover:translate-x-1 transition-transform"
+              >arrow_forward</span
+            >
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // State
+      let totalBill = 97680;
+      let cashReceived = 0;
+      let selectedMethod = "tunai";
+
+      // Generate random order number
+      const orderNumber = "AIPOS-" + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById("orderNumber").textContent =
+        "Order #" + orderNumber;
+
+      // Format Rupiah
+      function formatRupiah(num) {
+        return "Rp " + num.toLocaleString("id-ID");
+      }
+
+      // Parse number from formatted string
+      function parseNumber(str) {
+        return parseInt(str.replace(/\D/g, "")) || 0;
+      }
+
+      // Initialize
+      function init() {
+        document.getElementById("totalBillDisplay").textContent =
+          formatRupiah(totalBill);
+        document.getElementById("billAmount").textContent =
+          formatRupiah(totalBill);
+        renderQuickAmounts();
+        updateDisplay();
+      }
+
+      // Render quick amount buttons
+      function renderQuickAmounts() {
+        const container = document.getElementById("quickAmounts");
+        const amounts = [
+          { label: "Uang Pas", value: totalBill },
+          { label: formatRupiah(100000), value: 100000 },
+          { label: formatRupiah(150000), value: 150000 },
+        ];
+
+        container.innerHTML = amounts
+          .map(
+            (amt, idx) => `
+          <button onclick="setAmount(${
+            amt.value
+          })" class="quick-amount-btn px-2 py-2.5 text-xs font-semibold rounded-lg border ${
+              idx === 0
+                ? "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+                : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+            } hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all shadow-sm" data-value="${
+              amt.value
+            }">
+            ${amt.label}
+          </button>
+        `
+          )
+          .join("");
+      }
+
+      // Set amount from quick button
+      function setAmount(value) {
+        cashReceived = value;
+        document.getElementById("cashInput").value =
+          value.toLocaleString("id-ID");
+        updateQuickButtonStyles(value);
+        updateDisplay();
+      }
+
+      // Update quick button styles
+      function updateQuickButtonStyles(selectedValue) {
+        document.querySelectorAll(".quick-amount-btn").forEach((btn) => {
+          const btnValue = parseInt(btn.dataset.value);
+          if (btnValue === selectedValue) {
+            btn.classList.remove(
+              "border-gray-200",
+              "dark:border-gray-600",
+              "text-gray-600",
+              "dark:text-gray-300"
+            );
+            btn.classList.add(
+              "border-primary",
+              "bg-primary/5",
+              "text-primary",
+              "ring-1",
+              "ring-primary/20"
+            );
+          } else {
+            btn.classList.remove(
+              "border-primary",
+              "bg-primary/5",
+              "text-primary",
+              "ring-1",
+              "ring-primary/20"
+            );
+            btn.classList.add(
+              "border-gray-200",
+              "dark:border-gray-600",
+              "text-gray-600",
+              "dark:text-gray-300"
+            );
+          }
+        });
+      }
+
+      // Clear cash input
+      function clearCashInput() {
+        cashReceived = 0;
+        document.getElementById("cashInput").value = "";
+        updateQuickButtonStyles(0);
+        updateDisplay();
+      }
+
+      // Select payment method
+      function selectMethod(method) {
+        selectedMethod = method;
+
+        // Reset all method styles
+        const tunaiSection = document.getElementById("tunaiSection");
+        const tunaiDetail = document.getElementById("tunaiDetail");
+        const tunaiCheck = document.getElementById("tunaiCheck");
+        const paymentBtns = document.querySelectorAll(".payment-btn");
+
+        // Remove selected styles from tunai
+        tunaiSection.classList.remove("border-primary", "selected-method");
+        tunaiSection.classList.add("border-gray-200", "dark:border-gray-700");
+        tunaiDetail.classList.add("hidden");
+        tunaiCheck.classList.add("hidden");
+
+        // Remove selected styles from non-tunai buttons
+        paymentBtns.forEach((btn) => {
+          btn.classList.remove("border-primary", "border-2", "selected-method");
+          btn.classList.add("border-gray-100", "dark:border-gray-700");
+          const checkmark = btn.querySelector(".checkmark");
+          if (checkmark) checkmark.remove();
+        });
+
+        if (method === "tunai") {
+          tunaiSection.classList.remove(
+            "border-gray-200",
+            "dark:border-gray-700"
+          );
+          tunaiSection.classList.add("border-primary", "selected-method");
+          tunaiDetail.classList.remove("hidden");
+          tunaiCheck.classList.remove("hidden");
+          document.getElementById("paidMethodLabel").textContent =
+            "Dibayar (Tunai)";
+        } else {
+          const methodLabels = {
+            qris: "QRIS",
+            ewallet: "E-Wallet",
+            card: "Debit/Kredit",
+            transfer: "Transfer Bank",
+          };
+          document.getElementById(
+            "paidMethodLabel"
+          ).textContent = `Dibayar (${methodLabels[method]})`;
+
+          // Highlight selected non-tunai button
+          const selectedBtn = document.getElementById(`${method}Btn`);
+          if (selectedBtn) {
+            selectedBtn.classList.remove(
+              "border-gray-100",
+              "dark:border-gray-700"
+            );
+            selectedBtn.classList.add(
+              "border-primary",
+              "border-2",
+              "selected-method"
+            );
+
+            // Add checkmark
+            const checkmark = document.createElement("div");
+            checkmark.className =
+              "checkmark absolute top-2 right-2 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center";
+            checkmark.innerHTML =
+              '<span class="material-symbols-outlined text-xs">check</span>';
+            selectedBtn.appendChild(checkmark);
+          }
+
+          // For non-tunai, set cash to exact total
+          cashReceived = totalBill;
+        }
+
+        updateDisplay();
+      }
+
+      // Update all displays
+      function updateDisplay() {
+        const change = cashReceived - totalBill;
+        const changeFormatted = formatRupiah(Math.max(0, change));
+
+        // Update change displays
+        document.getElementById("changeDisplay").innerHTML = `
+          <span class="material-symbols-outlined text-[18px]">savings</span>
+          <span class="font-bold">${changeFormatted}</span>
+        `;
+        document.getElementById("bottomChangeDisplay").textContent =
+          changeFormatted;
+
+        // Update paid amount
+        document.getElementById("paidAmount").textContent =
+          formatRupiah(cashReceived);
+
+        // Enable/disable process button
+        const processBtn = document.getElementById("processBtn");
+        if (cashReceived >= totalBill) {
+          processBtn.disabled = false;
+        } else {
+          processBtn.disabled = true;
+        }
+
+        // Update change display color
+        const changeDisplay = document.getElementById("changeDisplay");
+        const bottomChange = document.getElementById("bottomChangeDisplay");
+        if (change < 0) {
+          changeDisplay.classList.remove(
+            "text-green-600",
+            "dark:text-green-400",
+            "bg-green-50",
+            "dark:bg-green-900/20"
+          );
+          changeDisplay.classList.add(
+            "text-blue-600",
+            "dark:text-blue-400",
+            "bg-blue-50",
+            "dark:bg-blue-900/20"
+          );
+          bottomChange.classList.remove(
+            "text-green-600",
+            "dark:text-green-400"
+          );
+          bottomChange.classList.add("text-blue-600", "dark:text-blue-400");
+          changeDisplay.innerHTML = `
+            <span class="material-symbols-outlined text-[18px]">warning</span>
+            <span class="font-bold">Kurang ${formatRupiah(
+              Math.abs(change)
+            )}</span>
+          `;
+          bottomChange.textContent = `Kurang ${formatRupiah(Math.abs(change))}`;
+        } else {
+          changeDisplay.classList.remove(
+            "text-blue-600",
+            "dark:text-blue-400",
+            "bg-blue-50",
+            "dark:bg-blue-900/20"
+          );
+          changeDisplay.classList.add(
+            "text-green-600",
+            "dark:text-green-400",
+            "bg-green-50",
+            "dark:bg-green-900/20"
+          );
+          bottomChange.classList.remove("text-blue-600", "dark:text-blue-400");
+          bottomChange.classList.add("text-green-600", "dark:text-green-400");
+        }
+      }
+
+      // Cash input handler
+      document.getElementById("cashInput").addEventListener("input", (e) => {
+        const value = e.target.value.replace(/\D/g, "");
+        cashReceived = parseInt(value) || 0;
+        e.target.value =
+          cashReceived > 0 ? cashReceived.toLocaleString("id-ID") : "";
+        updateQuickButtonStyles(cashReceived);
+        updateDisplay();
+      });
+
+      // Auto-scroll saat input di-focus (untuk mobile keyboard)
+      document.getElementById("cashInput").addEventListener("focus", (e) => {
+        // Tunggu keyboard muncul
+        setTimeout(() => {
+          // Scroll ke input agar terlihat di atas keyboard
+          e.target.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }, 300);
+      });
+
+      // Juga handle saat click pada container input
+      document.getElementById("tunaiSection").addEventListener("click", (e) => {
+        const cashInput = document.getElementById("cashInput");
+        if (e.target !== cashInput && selectedMethod === "tunai") {
+          // Jika klik di area tunai section tapi bukan di input, focus ke input
+          if (e.target.closest(".space-y-1")) {
+            cashInput.focus();
+          }
+        }
+      });
+
+      // Process payment
+      function processPayment() {
+        if (cashReceived < totalBill) {
+          alert("Pembayaran kurang!");
+          return;
+        }
+
+        const change = cashReceived - totalBill;
+        const methodLabels = {
+          tunai: "Tunai",
+          qris: "QRIS",
+          ewallet: "E-Wallet",
+          card: "Debit/Kredit",
+          transfer: "Transfer Bank",
+        };
+
+        alert(
+          `✅ Pembayaran Berhasil!\n\n` +
+            `Order: #${orderNumber}\n` +
+            `Total: ${formatRupiah(totalBill)}\n` +
+            `Metode: ${methodLabels[selectedMethod]}\n` +
+            `Dibayar: ${formatRupiah(cashReceived)}\n` +
+            `Kembalian: ${formatRupiah(change)}`
+        );
+
+        // Redirect to home or receipt page
+        // window.location.href = '1home.html';
+      }
+
+      // Initialize
+      init();
+    </script>
+  </body>
+</html>
+
+

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pengaturan - AIPOS</title>
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              secondary: "#333333",
+              "background-light": "#ffffff",
+              "background-dark": "#121212",
+              "card-light": "#ffffff",
+              "card-dark": "#1e1e1e",
+              "separator-light": "#f0f0f0",
+              "separator-dark": "#2d2d2d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-secondary dark:text-white min-h-screen flex flex-col"
+  >
+    <div
+      class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-white dark:bg-background-dark"
+    >
+      <!-- Header Maroon (Brand Colors) -->
+      <header
+        class="bg-primary text-white pt-10 pb-5 px-6 flex items-center gap-4 sticky top-0 z-50 shadow-md"
+      >
+        <a
+          href="5akun.html"
+          class="hover:bg-white/20 p-2 -ml-2 rounded-full transition-colors flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+        </a>
+        <h1 class="text-xl font-bold tracking-tight">Pengaturan</h1>
+      </header>
+
+      <main class="flex-1 bg-white dark:bg-background-dark">
+        <!-- Settings List -->
+        <div class="flex flex-col">
+          <!-- Daftar Pengguna -->
+          <div
+            class="flex items-center gap-6 px-6 py-5 border-b border-separator-light dark:border-separator-dark active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer group"
+          >
+            <span
+              class="material-symbols-outlined text-primary text-[28px] shrink-0"
+              >group</span
+            >
+            <p
+              class="text-gray-900 dark:text-white text-[17px] font-semibold flex-1 tracking-tight"
+            >
+              Daftar Pengguna
+            </p>
+            <span class="material-symbols-outlined text-gray-300"
+              >chevron_right</span
+            >
+          </div>
+
+          <!-- Pembayaran Non-Tunai -->
+          <div
+            class="flex items-center gap-6 px-6 py-5 border-b border-separator-light dark:border-separator-dark active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+          >
+            <span
+              class="material-symbols-outlined text-primary text-[28px] shrink-0"
+              >credit_card</span
+            >
+            <p
+              class="text-gray-900 dark:text-white text-[17px] font-semibold flex-1 tracking-tight"
+            >
+              Pembayaran Non-Tunai
+            </p>
+            <span class="material-symbols-outlined text-gray-300"
+              >chevron_right</span
+            >
+          </div>
+
+          <!-- Penjualan Item -->
+          <div
+            class="flex items-center gap-6 px-6 py-5 border-b border-separator-light dark:border-separator-dark active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+          >
+            <span
+              class="material-symbols-outlined text-primary text-[28px] shrink-0"
+              >description</span
+            >
+            <p
+              class="text-gray-900 dark:text-white text-[17px] font-semibold flex-1 tracking-tight"
+            >
+              Penjualan Item
+            </p>
+            <span class="material-symbols-outlined text-gray-300"
+              >chevron_right</span
+            >
+          </div>
+
+          <!-- Biaya Transaksi -->
+          <div
+            class="flex items-center gap-6 px-6 py-5 border-b border-separator-light dark:border-separator-dark active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+          >
+            <span
+              class="material-symbols-outlined text-primary text-[28px] shrink-0"
+              >percent</span
+            >
+            <p
+              class="text-gray-900 dark:text-white text-[17px] font-semibold flex-1 tracking-tight"
+            >
+              Biaya Transaksi
+            </p>
+            <span class="material-symbols-outlined text-gray-300"
+              >chevron_right</span
+            >
+          </div>
+
+          <!-- Struk & Printer -->
+          <div
+            class="flex items-center gap-6 px-6 py-5 border-b border-separator-light dark:border-separator-dark active:bg-gray-50 dark:active:bg-gray-800 transition-colors cursor-pointer"
+          >
+            <span
+              class="material-symbols-outlined text-primary text-[28px] shrink-0"
+              >print</span
+            >
+            <p
+              class="text-gray-900 dark:text-white text-[17px] font-semibold flex-1 tracking-tight"
+            >
+              Struk & Printer
+            </p>
+            <span class="material-symbols-outlined text-gray-300"
+              >chevron_right</span
+            >
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+

@@ -1,107 +1,115 @@
 #!/bin/bash
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
+# Warna untuk output
+MERAH='\033[0;31m'
+HIJAU='\033[0;32m'
+KUNING='\033[1;33m'
+BIRU='\033[0;34m'
+UNGU='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # =========================
-# Get current branch
+# Dapatkan branch saat ini
 # =========================
-CURRENT_BRANCH=$(git branch --show-current)
+BRANCH_SAAT_INI=$(git branch --show-current)
 
 # =========================
-# Get staged changes
+# Periksa perubahan yang di-staged
 # =========================
-echo -e "${BLUE}=== Checking for staged changes... ===${NC}"
+echo -e "${BIRU}=== Memeriksa perubahan yang di-staged... ===${NC}"
 
-DIFF=$(git diff --cached --unified=0 | head -n 100)
-FILES=$(git diff --cached --name-only)
+PERUBAHAN=$(git diff --cached --unified=0 | head -n 100)
+FILE=$(git diff --cached --name-only)
 
-if [ -z "$FILES" ]; then
-  echo -e "${RED}No staged changes found.${NC}"
-  echo -e "${YELLOW}You need to stage files first:${NC}"
+if [ -z "$FILE" ]; then
+  echo -e "${MERAH}Tidak ada perubahan yang di-staged.${NC}"
+  echo -e "${KUNING}Anda perlu men-stage file terlebih dahulu:${NC}"
   echo "  git add <file>"
-  echo "  or"
+  echo "  atau"
   echo "  git add ."
   exit 1
 fi
 
-echo -e "${GREEN}✓ Found staged changes${NC}"
+echo -e "${HIJAU}✓ Perubahan ditemukan${NC}"
 echo ""
 
 # =========================
-# Show what's being committed
+# Tampilkan ringkasan perubahan
 # =========================
-echo -e "${CYAN}=== Summary of Changes ===${NC}"
-echo -e "${YELLOW}Current Branch:${NC} $CURRENT_BRANCH"
+echo -e "${CYAN}=== Ringkasan Perubahan ===${NC}"
+echo -e "${KUNING}Branch Saat Ini:${NC} $BRANCH_SAAT_INI"
 echo ""
-echo -e "${YELLOW}Files to be committed:${NC}"
-echo "$FILES" | while read file; do
+echo -e "${KUNING}File yang akan di-commit:${NC}"
+echo "$FILE" | while read file; do
   STATUS=$(git diff --cached --name-status "$file" | cut -f1)
   case $STATUS in
-    A) COLOR=$GREEN; STATUS_TEXT="Added   ";;
-    M) COLOR=$YELLOW; STATUS_TEXT="Modified";;
-    D) COLOR=$RED; STATUS_TEXT="Deleted ";;
-    R) COLOR=$PURPLE; STATUS_TEXT="Renamed ";;
-    C) COLOR=$CYAN; STATUS_TEXT="Copied  ";;
-    *) COLOR=$NC; STATUS_TEXT="Unknown ";;
+    A) WARNA=$HIJAU; STATUS_TEKS="Ditambahkan   ";;
+    M) WARNA=$KUNING; STATUS_TEKS="Dimodifikasi ";;
+    D) WARNA=$MERAH; STATUS_TEKS="Dihapus      ";;
+    R) WARNA=$UNGU; STATUS_TEKS="Direname    ";;
+    C) WARNA=$CYAN; STATUS_TEKS="Disalin     ";;
+    *) WARNA=$NC; STATUS_TEKS="Tidak diketahui";;
   esac
-  echo -e "  ${COLOR}${STATUS_TEXT}${NC} - $file"
+  echo -e "  ${WARNA}${STATUS_TEKS}${NC} - $file"
 done
 
 echo ""
-echo -e "${YELLOW}Changes preview:${NC}"
-if [ -n "$DIFF" ]; then
-  echo "$DIFF" | head -n 30
-  if [ $(echo "$DIFF" | wc -l) -gt 30 ]; then
-    echo -e "${YELLOW}... (more changes not shown)${NC}"
+echo -e "${KUNING}Preview perubahan:${NC}"
+if [ -n "$PERUBAHAN" ]; then
+  echo "$PERUBAHAN" | head -n 30
+  if [ $(echo "$PERUBAHAN" | wc -l) -gt 30 ]; then
+    echo -e "${KUNING}... (masih ada perubahan yang tidak ditampilkan)${NC}"
   fi
 else
-  echo -e "${YELLOW}(No diff preview available)${NC}"
+  echo -e "${KUNING}(Tidak ada preview perubahan)${NC}"
 fi
 echo -e "${CYAN}================================${NC}"
 echo ""
 
 # =========================
-# Get commit message from user
+# Minta pesan commit dari pengguna
 # =========================
-echo -e "${BLUE}=== Commit Message ===${NC}"
-echo -e "${YELLOW}Recommended format:${NC}"
-echo "  feat: add new feature"
-echo "  fix: resolve issue"
-echo "  refactor: improve code structure"
-echo "  chore: maintenance tasks"
-echo "  docs: update documentation"
-echo "  style: code formatting"
-echo "  test: add/update tests"
-echo "  perf: performance improvements"
+echo -e "${BIRU}=== Pesan Commit ===${NC}"
+echo -e "${KUNING}Format yang direkomendasikan:${NC}"
+echo "  feat: menambahkan fitur baru"
+echo "  fix: memperbaiki bug atau masalah"
+echo "  refactor: restrukturisasi kode tanpa mengubah fungsionalitas"
+echo "  chore: tugas pemeliharaan, update dependency"
+echo "  docs: memperbarui dokumentasi"
+echo "  style: formatting kode, tidak mempengaruhi logika"
+echo "  test: menambah atau memperbarui test case"
+echo "  perf: optimasi performa"
+echo "  build: perubahan pada build system"
+echo "  ci: perubahan konfigurasi CI/CD"
 echo ""
-echo -e "${YELLOW}Examples:${NC}"
-echo "  feat: add user login functionality"
-echo "  fix: correct button click handler"
-echo "  docs: update API documentation"
+echo -e "${KUNING}Contoh untuk programmer profesional:${NC}"
+echo "  feat: implementasi autentikasi JWT dengan refresh token"
+echo "  fix: resolve race condition pada service payment"
+echo "  refactor: ekstrak business logic ke module terpisah"
+echo "  chore: update react-dom ke versi 18.2.0"
+echo "  docs: tambahkan dokumentasi API endpoint /users"
+echo "  perf: optimasi query database dengan indexing"
+echo "  test: tambahkan unit test untuk utils/validation"
+echo "  style: format kode dengan prettier sesuai eslint config"
 echo ""
 
 while true; do
-  read -p "Enter commit message: " COMMIT_MSG
+  read -p "Masukkan pesan commit: " PESAN_COMMIT
   
   # Trim whitespace
-  COMMIT_MSG=$(echo "$COMMIT_MSG" | xargs)
+  PESAN_COMMIT=$(echo "$PESAN_COMMIT" | xargs)
   
-  if [ -z "$COMMIT_MSG" ]; then
-    echo -e "${RED}Commit message cannot be empty.${NC}"
+  if [ -z "$PESAN_COMMIT" ]; then
+    echo -e "${MERAH}Pesan commit tidak boleh kosong.${NC}"
     continue
   fi
   
-  # Optional: Validate format (can be removed if not needed)
-  if ! echo "$COMMIT_MSG" | grep -E '^(feat|fix|refactor|chore|docs|style|test|perf|build|ci|revert):' >/dev/null; then
-    echo -e "${YELLOW}Warning: Commit message doesn't follow conventional format.${NC}"
-    echo -e "${YELLOW}Continue anyway? [y/N]: ${NC}\c"
+  # Validasi format conventional commit
+  if ! echo "$PESAN_COMMIT" | grep -E '^(feat|fix|refactor|chore|docs|style|test|perf|build|ci|revert):' >/dev/null; then
+    echo -e "${KUNING}⚠  Warning: Pesan commit tidak mengikuti format conventional.${NC}"
+    echo -e "${KUNING}   Contoh format: 'tipe: deskripsi' (feat:, fix:, dll)${NC}"
+    echo -e "${KUNING}   Lanjutkan? [y/N]: ${NC}\c"
     read -n 1 -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -113,125 +121,141 @@ while true; do
 done
 
 # =========================
-# Add timestamp (optional)
+# Tambahkan timestamp secara otomatis
 # =========================
-echo -e "\n${YELLOW}Add timestamp to commit message? [y/N]: ${NC}\c"
-read -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
-  FINAL_MSG="$COMMIT_MSG ($TIMESTAMP)"
-else
-  FINAL_MSG="$COMMIT_MSG"
-fi
+TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
+PESAN_AKHIR="$PESAN_COMMIT | $TIMESTAMP"
 
 # =========================
-# Show final confirmation
+# Tampilkan konfirmasi akhir
 # =========================
-echo -e "\n${PURPLE}=== Final Review ===${NC}"
-echo -e "${YELLOW}Branch:${NC} $CURRENT_BRANCH"
-echo -e "${YELLOW}Files:${NC}"
-echo "$FILES"
-echo -e "${YELLOW}Commit message:${NC}"
-echo -e "  ${GREEN}$FINAL_MSG${NC}"
+echo -e "\n${UNGU}=== Review Akhir ===${NC}"
+echo -e "${KUNING}Branch:${NC} $BRANCH_SAAT_INI"
+echo -e "${KUNING}Jumlah file:${NC} $(echo "$FILE" | wc -l | tr -d ' ')"
+echo -e "${KUNING}Pesan commit:${NC}"
+echo -e "  ${HIJAU}$PESAN_AKHIR${NC}"
 echo ""
 
-echo -e "${RED}Proceed with commit? [y/N]: ${NC}\c"
+echo -e "${MERAH}Eksekusi commit? [y/N]: ${NC}\c"
 read -n 1 -r
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo -e "${YELLOW}Commit cancelled.${NC}"
+  echo -e "${KUNING}Commit dibatalkan.${NC}"
   exit 0
 fi
 
 # =========================
-# Perform the commit
+# Eksekusi commit
 # =========================
-echo -e "${BLUE}Committing changes...${NC}"
-if git commit -m "$FINAL_MSG"; then
-  echo -e "${GREEN}✓ Successfully committed to $CURRENT_BRANCH${NC}"
+echo -e "${BIRU}Menjalankan commit...${NC}"
+if git commit -m "$PESAN_AKHIR"; then
+  echo -e "${HIJAU}✓ Berhasil commit ke branch $BRANCH_SAAT_INI${NC}"
   echo ""
   
   # =========================
-  # Ask about pushing
+  # Tanya tentang push
   # =========================
-  echo -e "${CYAN}=== Push to Remote ===${NC}"
-  echo "1) Push to origin/$CURRENT_BRANCH"
-  echo "2) Push to different branch"
-  echo "3) Don't push now"
+  echo -e "${CYAN}=== Push ke Remote Repository ===${NC}"
+  echo "1) Push ke origin/$BRANCH_SAAT_INI"
+  echo "2) Push ke branch lain"
+  echo "3) Push dengan force (hati-hati!)"
+  echo "4) Jangan push sekarang"
   echo ""
   
-  read -p "Choose option [1-3]: " PUSH_CHOICE
+  read -p "Pilih opsi [1-4]: " PILIHAN_PUSH
   
-  case $PUSH_CHOICE in
+  case $PILIHAN_PUSH in
     1)
-      echo -e "${BLUE}Pushing to origin/$CURRENT_BRANCH...${NC}"
-      if git push origin "$CURRENT_BRANCH"; then
-        echo -e "${GREEN}✓ Successfully pushed to origin/$CURRENT_BRANCH${NC}"
+      echo -e "${BIRU}Push ke origin/$BRANCH_SAAT_INI...${NC}"
+      if git push origin "$BRANCH_SAAT_INI"; then
+        echo -e "${HIJAU}✓ Berhasil push ke origin/$BRANCH_SAAT_INI${NC}"
       else
-        echo -e "${RED}✗ Push failed${NC}"
-        echo -e "${YELLOW}You can try manually: git push origin $CURRENT_BRANCH${NC}"
+        echo -e "${MERAH}✗ Push gagal${NC}"
+        echo -e "${KUNING}Coba manual: git push origin $BRANCH_SAAT_INI${NC}"
       fi
       ;;
       
     2)
-      # Show available remote branches
-      echo -e "${BLUE}Available remote branches:${NC}"
+      # Tampilkan branch remote yang tersedia
+      echo -e "${BIRU}Branch remote yang tersedia:${NC}"
       git branch -r | head -15
       echo ""
       
-      read -p "Enter target branch name (without 'origin/'): " TARGET_BRANCH
+      read -p "Masukkan nama branch target (tanpa 'origin/'): " BRANCH_TARGET
       
-      if [ -z "$TARGET_BRANCH" ]; then
-        echo -e "${RED}No branch specified.${NC}"
+      if [ -z "$BRANCH_TARGET" ]; then
+        echo -e "${MERAH}Tidak ada branch yang ditentukan.${NC}"
         exit 1
       fi
       
-      echo -e "${BLUE}Pushing to origin/$TARGET_BRANCH...${NC}"
+      echo -e "${BIRU}Push ke origin/$BRANCH_TARGET...${NC}"
       
-      # Check if branch exists on remote
-      if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
-        # Push to existing branch
-        if git push origin "$CURRENT_BRANCH:$TARGET_BRANCH"; then
-          echo -e "${GREEN}✓ Successfully pushed to origin/$TARGET_BRANCH${NC}"
+      # Cek apakah branch ada di remote
+      if git ls-remote --exit-code --heads origin "$BRANCH_TARGET" >/dev/null 2>&1; then
+        # Push ke branch yang sudah ada
+        if git push origin "$BRANCH_SAAT_INI:$BRANCH_TARGET"; then
+          echo -e "${HIJAU}✓ Berhasil push ke origin/$BRANCH_TARGET${NC}"
         else
-          echo -e "${RED}✗ Push failed${NC}"
+          echo -e "${MERAH}✗ Push gagal${NC}"
         fi
       else
-        echo -e "${YELLOW}Branch 'origin/$TARGET_BRANCH' doesn't exist.${NC}"
-        echo -e "${YELLOW}Create new branch '$TARGET_BRANCH' on remote? [y/N]: ${NC}\c"
+        echo -e "${KUNING}Branch 'origin/$BRANCH_TARGET' belum ada.${NC}"
+        echo -e "${KUNING}Buat branch baru di remote? [y/N]: ${NC}\c"
         read -n 1 -r
         echo ""
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-          if git push origin "$CURRENT_BRANCH:refs/heads/$TARGET_BRANCH"; then
-            echo -e "${GREEN}✓ Created and pushed to origin/$TARGET_BRANCH${NC}"
+          if git push origin "$BRANCH_SAAT_INI:refs/heads/$BRANCH_TARGET"; then
+            echo -e "${HIJAU}✓ Berhasil membuat dan push ke origin/$BRANCH_TARGET${NC}"
           else
-            echo -e "${RED}✗ Failed to create branch${NC}"
+            echo -e "${MERAH}✗ Gagal membuat branch${NC}"
           fi
         else
-          echo -e "${YELLOW}Push cancelled.${NC}"
+          echo -e "${KUNING}Push dibatalkan.${NC}"
         fi
       fi
       ;;
       
     3)
-      echo -e "${YELLOW}Not pushing now. You can push later with:${NC}"
-      echo "  git push origin $CURRENT_BRANCH"
+      echo -e "${MERAH}⚠  PERINGATAN: Force push akan menimpa history remote!${NC}"
+      echo -e "${KUNING}   Hanya gunakan jika Anda yakin.${NC}"
+      echo -e "${KUNING}   Force push ke origin/$BRANCH_SAAT_INI? [y/N]: ${NC}\c"
+      read -n 1 -r
+      echo ""
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${BIRU}Force pushing ke origin/$BRANCH_SAAT_INI...${NC}"
+        if git push origin "$BRANCH_SAAT_INI" --force; then
+          echo -e "${HIJAU}✓ Berhasil force push${NC}"
+        else
+          echo -e "${MERAH}✗ Force push gagal${NC}"
+        fi
+      else
+        echo -e "${KUNING}Force push dibatalkan.${NC}"
+      fi
+      ;;
+      
+    4)
+      echo -e "${KUNING}Tidak push sekarang. Anda bisa push nanti dengan:${NC}"
+      echo "  git push origin $BRANCH_SAAT_INI"
       ;;
       
     *)
-      echo -e "${YELLOW}Invalid option. Not pushing.${NC}"
+      echo -e "${KUNING}Opsi tidak valid. Tidak melakukan push.${NC}"
       ;;
   esac
   
-  # Show git status after commit
-  echo -e "\n${CYAN}=== Current Status ===${NC}"
+  # Tampilkan status git setelah commit
+  echo -e "\n${CYAN}=== Status Terkini ===${NC}"
   git status --short
   
+  # Tampilkan log commit terakhir
+  echo -e "\n${CYAN}=== Log Commit Terakhir ===${NC}"
+  git log --oneline -3
+  
 else
-  echo -e "${RED}✗ Commit failed${NC}"
-  echo -e "${YELLOW}Check for errors above.${NC}"
+  echo -e "${MERAH}✗ Commit gagal${NC}"
+  echo -e "${KUNING}Periksa error di atas.${NC}"
   exit 1
 fi
 
-echo -e "\n${GREEN}✓ Done!${NC}"
+echo -e "\n${HIJAU}✓ Selesai!${NC}"
+echo -e "${KUNING}Waktu: $(date '+%H:%M:%S')${NC}"

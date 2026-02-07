@@ -1,0 +1,231 @@
+<!doctype html>
+<html class="light" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AIPOS - Loading</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563ea",
+              secondary: "#333333",
+              "background-light": "#f8f5f5",
+              "background-dark": "#121212",
+              "surface-light": "#ffffff",
+              "surface-dark": "#1e1e1e",
+            },
+            fontFamily: {
+              display: ["Inter", "Noto Sans", "sans-serif"],
+            },
+            animation: {
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              shimmer: "shimmer 2s linear infinite",
+            },
+            keyframes: {
+              shimmer: {
+                "0%": { backgroundPosition: "-200% 0" },
+                "100%": { backgroundPosition: "200% 0" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 1,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 48;
+      }
+
+      /* Custom animations for a premium feel */
+      @keyframes scale-in {
+        0% {
+          transform: scale(0.9);
+          opacity: 0;
+          filter: blur(10px);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+          filter: blur(0);
+        }
+      }
+
+      @keyframes slide-up {
+        0% {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fade-in {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .animate-scale-in {
+        animation: scale-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .animate-slide-up {
+        animation: slide-up 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        opacity: 0;
+      }
+
+      .animate-fade-in {
+        animation: fade-in 1.5s ease-out 0.5s forwards;
+        opacity: 0;
+      }
+
+      .loader-bar {
+        position: relative;
+        height: 6px;
+        width: 180px;
+        background: rgba(37, 99, 234, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(4px);
+      }
+
+      .loader-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 45%;
+        background: linear-gradient(90deg, #2563ea, #60a5fa);
+        border-radius: 20px;
+        animation: loading-flow 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 15px rgba(37, 99, 234, 0.5);
+      }
+
+      @keyframes loading-flow {
+        0% {
+          left: -45%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .dark .glass-card {
+        background: rgba(30, 30, 30, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-[#0a0a0c] flex flex-col items-center justify-center min-h-screen overflow-hidden text-secondary dark:text-white"
+  >
+    <!-- Dynamic Background Decor -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div
+        class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow"
+      ></div>
+      <div
+        class="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-[150px] animate-pulse-slow"
+        style="animation-delay: 1.5s"
+      ></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative flex flex-col items-center gap-16 z-10">
+      <!-- Brand Identity -->
+      <div class="flex flex-col items-center gap-8 animate-scale-in">
+        <div class="relative group">
+          <!-- Multi-layered Glow -->
+          <div
+            class="absolute -inset-4 bg-primary/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          ></div>
+          <div
+            class="absolute inset-0 bg-primary/30 blur-2xl rounded-3xl animate-pulse-slow"
+          ></div>
+
+          <!-- Premium Logo Container -->
+          <div
+            class="relative w-28 h-28 bg-gradient-to-br from-primary to-blue-600 rounded-[2.5rem] flex items-center justify-center shadow-[0_20px_50px_rgba(37,99,234,0.3)] transform transition-all duration-500 hover:scale-105 hover:rotate-3"
+          >
+            <span class="material-symbols-outlined text-white text-6xl"
+              >storefront</span
+            >
+          </div>
+        </div>
+
+        <div class="text-center">
+          <h1
+            class="text-5xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-secondary to-gray-700 dark:from-white dark:to-gray-400 mb-2"
+          >
+            AIPOS
+          </h1>
+          <div class="h-1 w-12 bg-primary mx-auto rounded-full mb-3"></div>
+          <p
+            class="text-gray-500 dark:text-gray-400 font-semibold tracking-[0.3em] text-[10px] uppercase"
+          >
+            Modern POS Solution
+          </p>
+        </div>
+      </div>
+
+      <!-- Loading Interaction -->
+      <div class="flex flex-col items-center gap-10 animate-slide-up">
+        <div class="flex flex-col items-center gap-5">
+          <div class="loader-bar"></div>
+          <p
+            class="text-[11px] font-bold text-primary/70 dark:text-primary/50 tracking-widest uppercase animate-pulse"
+          >
+            Menyiapkan Sistem...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional: Auto Redirect script -->
+    <script>
+      // Aktifkan ini jika ingin berpindah halaman otomatis setelah loading selesai
+      /*
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 3500);
+      */
+    </script>
+  </body>
+</html>

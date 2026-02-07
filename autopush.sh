@@ -36,12 +36,13 @@ JSON=$(jq -n \
     model: $model,
     prompt: $prompt,
     stream: false,
-    options: {
-      temperature: 0.15,
-      num_predict: 60,
-      top_p: 0.9,
-      repeat_penalty: 1.2
-    }
+   options: {
+    temperature: 0.1,
+    num_predict: 25,
+    top_p: 0.8,
+    repeat_penalty: 1.3,
+    stop: ["\n"]
+}
   }')
 
 # =========================

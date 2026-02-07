@@ -1,7 +1,4 @@
-#!/bin/bash
-# enhanced-commit.sh
 
-echo "=== SMART GIT COMMIT ==="
 echo ""
 
 # Tampilkan perubahan

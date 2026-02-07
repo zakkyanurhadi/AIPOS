@@ -40,9 +40,8 @@ JSON=$(jq -n \
     temperature: 0.1,
     num_predict: 25,
     top_p: 0.8,
-    repeat_penalty: 1.3,
-    stop: ["\n"]
-}
+    repeat_penalty: 1.3
+  }
   }')
 
 # =========================
@@ -57,14 +56,21 @@ RAW=$(curl -s http://localhost:11434/api/generate \
 # =========================
 MSG=$(echo "$RAW" | jq -r '.response')
 
-# ambil baris pertama saja
-MSG=$(echo "$MSG" | tr -d '\r' | head -n 1)
+# hapus CR Windows
+MSG=$(echo "$MSG" | tr -d '\r')
 
-# potong jika model menulis "commit:"
-MSG=$(echo "$MSG" | sed 's/.*commit:[ ]*//I')
+# ambil hanya baris pertama
+MSG=$(printf "%s\n" "$MSG" | head -n 1)
+
+# jika AI mengulang instruksi, buang
+MSG=$(echo "$MSG" | sed -E 's/^(buat|tulis|write|generate).*commit.*//I')
+
+# ambil hanya pola commit
+MSG=$(echo "$MSG" | grep -oE '(feat|fix|refactor|chore|docs|style|perf|test):[^"]+')
 
 # trim spasi
 MSG=$(echo "$MSG" | sed 's/^ *//;s/ *$//')
+
 
 # =========================
 # validasi hasil

@@ -8,16 +8,18 @@ if [ -z "$DIFF" ]; then
   exit 0
 fi
 
-PROMPT="You are writing a git commit.
+PROMPT="Tulis pesan git commit 1 baris dalam Bahasa Indonesia.
 
-Rules:
-- one line
-- max 60 chars
-- start with feat:, fix:, refactor:, chore:, docs:, style:, perf:, or test:
-- no explanation
+Aturan:
+- maksimal 60 karakter
+- jangan ada penjelasan
+- gunakan: feat:, fix:, refactor:, chore:, docs:, style:, perf:, atau test:
+- bahasa sederhana seperti programmer
 
-Diff:
+Perubahan kode:
 $DIFF
+
+
 
 
 Commit:"

@@ -8,16 +8,17 @@ if [ -z "$DIFF" ]; then
   exit 0
 fi
 
-PROMPT="Write a one-line git commit message.
+PROMPT="You are writing a git commit.
 
 Rules:
-- max 72 chars
-- lowercase
+- one line
+- max 60 chars
+- start with feat:, fix:, refactor:, chore:, docs:, style:, perf:, or test:
 - no explanation
-- start with: feat, fix, refactor, chore, docs, style, perf, or test
 
 Diff:
 $DIFF
+
 
 Commit:"
 
